@@ -86,6 +86,7 @@ const Register = (props) => {
   useEffect(()=>{
     if(isConfirmed)
     {
+      props.get_data();
       navigate('/user-pannel');
     }
   
@@ -174,7 +175,7 @@ const Register = (props) => {
                 </h1>
 
                 <p className=" tw-text-white tw-text-xl sm:tw-text-left tw-text-center">
-                  Meta force is the flagship of decentralized systems, offering
+                  Booster is the flagship of decentralized systems, offering
                   a wide range of product
                 </p>
 

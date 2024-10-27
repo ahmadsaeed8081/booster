@@ -5,13 +5,17 @@ import PanelNav from "../../components/PanelNav/PanelNav";
 import { Link } from "react-router-dom";
 import PlatFromTable from "../../components/platFormTable";
 import moment from "moment";
+import { MdModeEditOutline } from "react-icons/md";
+import Loader from "../../components/Loader";
 
 import {
   cont_address,
   cont_abi,
   usdt_address,
   token_abi,
-} from "../../configs/Contracts";
+  cont_Name,
+  cont_Name_abi
+} from "../.././../src/configs/Contracts";
 import { useLocation } from "react-router-dom";
 import { useSwitchChain, useAccount, useDisconnect } from "wagmi";
 
@@ -153,7 +157,10 @@ const UserPannel = (props) => {
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   const [choosed_level, set_choosed_level] = useState({});
+  const [edit_state, set_EditState] = useState(false);
+  const [level_unlockProcessing, set_level_unlockProcessing] = useState(false);
 
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
@@ -174,7 +181,9 @@ const UserPannel = (props) => {
 
   const [count, set_count] = useState(0);
   const [badge, set_badge] = useState("");
+  const [newName, set_newName] = useState("");
 
+  
   const { address, isConnecting ,isConnected,isDisconnected} = useAccount()
   // const navigate = useNavigate();
 
@@ -202,6 +211,7 @@ const UserPannel = (props) => {
   
           });
   
+          set_count(1)
 
       } catch (err) {
           console.error(err);
@@ -218,6 +228,7 @@ const UserPannel = (props) => {
           functionName: "withdraw_Monthly_salary", 
 
         });
+        set_count(1)
 
 
     } catch (err) {
@@ -235,6 +246,7 @@ async function GiftRew1() {
         functionName: "withdraw_Monthly_salary", 
 
       });
+      set_count(1)
 
 
   } catch (err) {
@@ -243,6 +255,23 @@ async function GiftRew1() {
 
 }
 
+async function updateName1() {
+
+  try {
+      const tx = await writeContractAsync({
+        abi: cont_Name_abi,
+        address: cont_Name,
+        functionName: "update_Name", 
+        args: [
+          newName
+        ],
+      });
+      set_count(1)
+  } catch (err) {
+      console.error(err);
+  }
+
+}
 
   async function usdt_approval () {
     try {
@@ -264,8 +293,9 @@ async function GiftRew1() {
     if(isConfirmed)
     {
 
-      if(count==0)
+      if(count==0 && level_unlockProcessing)
       {
+        set_level_unlockProcessing(false);
         level_unlock1();
   
       }
@@ -276,6 +306,8 @@ async function GiftRew1() {
         props.get_data();
       }
     }
+    set_EditState(false)
+    set_newName(props.myName)
     find_badge()
   
   },[isConfirmed,props.badge])
@@ -316,10 +348,14 @@ async function GiftRew1() {
        if (chainId != currentChainId )
        {
          await switchChainAsync({ chainId });
+         set_level_unlockProcessing(true);
+
          await usdt_approval?.();
        } 
        else 
        {
+        set_level_unlockProcessing(true);
+
         await usdt_approval?.();
       }
    
@@ -439,9 +475,48 @@ async function GiftRew1() {
     }
 
 
+    async function updateName()
+    {
+
+       if(isDisconnected)
+       {
+         alert("Kindly Connect your Wallet");
+         return;
+       }
+       
+       if(!props.isRegister)
+       {
+         alert("You are not a registered memeber");
+         return;
+       }
+       
+ 
+       if(newName == "")
+       {
+          alert("kindly write the Name")
+          return;
+       }
+       if(newName == props.myName)
+       {
+          set_EditState(false)
+          return;
+       }
+
+       if (chainId != currentChainId )
+       {
+         await switchChainAsync({ chainId });
+         await updateName1?.();
+       } 
+       else 
+       {
+        await updateName1?.();
+      }
+   
+    }
+
   return (
     <>
-      <PanelNav />
+      <PanelNav search_user={props.search_user} />
 
       <section className="  sm:tw-pt-12 tw-pt-0 pb-12">
         <div className="tw-container tw-px-5 tw-mx-auto">
@@ -482,9 +557,38 @@ async function GiftRew1() {
                   </div>
 
                   <div className=" tw-w-44">
-                    <h5 className=" tw-text-white tw-font-poppins  tw-font-semibold tw-text-[20px]">
-                      James Radford
-                    </h5>
+                    {/* <div className=" tw-text-white tw-font-poppins  tw-font-semibold tw-text-[20px]">
+                     {props.myName} <MdModeEditOutline />
+
+                    </div> */}
+                      <div className="  tw-flex tw-gap-1">
+
+                      {edit_state?(
+                        <div className=" ">
+                          <input
+                          style={{ backgroundColor:"transparent" }}
+                            type="string"
+                            value={newName}
+                            onChange={(e) =>
+                              set_newName(e.target.value)
+                            }
+                            className="text-white text-[16px] h-10 pl-1    border rounded-lg outline-none w-10  font-medium"
+                          />
+                        </div>
+                      ):(
+                        <div className=" tw-text-white ">
+                        {props.myName}  
+                        </div>
+                      )}
+
+
+                        <div className=" tw-text-white ">
+                        {!edit_state?(<MdModeEditOutline onClick={()=>set_EditState(true)}/> ):(<button onClick={updateName} style={{ border:"1px solid #E4BC43", color:"#E4BC43",padding:"2px" }}>update</button>)}
+                        </div>
+
+                      </div>
+
+
                     <div className=" tw-flex tw-gap-4">
                       <div>
                         <p className=" m-0 tw-text-white  tw-font-poppins  tw-font-light">
@@ -519,21 +623,20 @@ async function GiftRew1() {
                       <div className=" tw-pt-2.5 tw-flex tw-gap-4">
                         <div className="">
                           <h6 className=" tw-text-white ">Upline ID</h6>
-                          <Link
-                            to={"#"}
+                          <div
                             className=" tw-text-[#EACE56] tw-text-[12px] tw-border  tw-p-1    tw-leading-1 tw-border-[#EACE56] tw-font-poppins"
+                            onClick={()=>props.search_user(Number(props.uplinerCode))}
                           >
                             {Number(props.uplinerCode)}
-                          </Link>
+                          </div>
                         </div>
                         <div>
                           <h6 className=" tw-text-white ">J.Date</h6>
-                          <Link
-                            to={"#"}
+                          <div
                             className=" tw-text-[#EACE56] tw-text-[12px] tw-border tw-p-1   tw-leading-1 tw-border-[#EACE56] tw-font-poppins"
                           >
                             {findTime(Number(props.joiningDate))}
-                          </Link>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -592,7 +695,7 @@ async function GiftRew1() {
                               />
                             </sup>
                             <span className=" tw-font-poppins tw-text-sm tw-text-[#EACE56]">
-                              975
+                              0
                             </span>
                           </div>
                         </div>
@@ -617,7 +720,7 @@ async function GiftRew1() {
                             ${Number(props.totalEarning)/10**6}
                           </h6>
                         </div>
-                        <div className=" tw-flex tw-items-start">
+                        {/* <div className=" tw-flex tw-items-start">
                           <sup>
                             <img
                               src={require("../../assets/images/watch.png")}
@@ -628,7 +731,7 @@ async function GiftRew1() {
                           <span className=" tw-font-poppins tw-pt-1 tw-text-[#EACE56]  tw-text-lg">
                             $345
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -969,7 +1072,7 @@ async function GiftRew1() {
                   </div>
                 </div>
 
-                <PlatFromTable />
+                <PlatFromTable historyData={props.historyData} />
               </div>
             </div>
           </div>
@@ -979,6 +1082,8 @@ async function GiftRew1() {
       </section>
 
       <Footer />
+      {props.loader && <Loader />}
+
     </>
   );
 };

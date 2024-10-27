@@ -1,6 +1,16 @@
 import React from 'react'
+import moment from "moment";
 
-const PlatFromTable = () => {
+const PlatFromTable = (props) => {
+
+
+  const count = (time) => {
+    const now = new Date(time*1000);  
+    const t=moment(now).format('D MMM YYYY');
+    return t;
+    
+  };
+
   return (
     <>
 <span className=" tw-pl-8 tw-text-white tw-font-zen-dots   md:tw-text-2xl sm:tw-text-xl tw-text-lg">
@@ -14,75 +24,71 @@ const PlatFromTable = () => {
                           scope="col"
                           className=" tw-text-black  tw-font-poppins tw-px-6 tw-py-4"
                         >
-                          Type
+                          Sr No.
                         </th>
                         <th
                           scope="col"
                           className="tw-text-black  tw-font-poppins  tw-px-6 tw-py-4"
                         >
-                          ID
+                          User ID
                         </th>
                         <th
                           scope="col"
                           className=" tw-text-black  tw-font-poppins  tw-px-6 tw-py-4"
                         >
-                          From
+                          Action
                         </th>
+
                         <th
                           scope="col"
                           className="tw-text-black  tw-font-poppins  tw-px-6 tw-py-4"
                         >
-                          Narration
-                        </th>
-                        <th
-                          scope="col"
-                          className="tw-text-black  tw-font-poppins  tw-px-6 tw-py-4"
-                        >
-                          TimeStamp
+                          Time
                         </th>
                       </tr>
                     </thead>
                     <tbody className=" ">
                       <>
-                        <tr className="tw-bg-[#2C2C2C] tw-rounded-md">
+                      {props.historyData.map((item,index)=>(
+
+                          <tr className="tw-bg-[#2C2C2C] tw-rounded-md">
                           <td className="tw-align-middle  tw-font-semibold tw-px-6 tw-py-3 tw-whitespace-nowrap tw-text-center">
-                            <img
-                              src={require("../../assets/images/crypto.png")}
-                              className=" tw-mx-auto"
-                              alt=""
-                            />
-                          </td>
-                          <td className="tw-align-middle  tw-font-semibold tw-px-6 tw-py-3 tw-whitespace-nowrap tw-text-center">
-                            <span className=" tw-text-white tw-font-poppins">
-                              3101
+                          <span className=" tw-text-white tw-font-poppins">
+                              0{index+1}
                             </span>
                           </td>
                           <td className="tw-align-middle  tw-font-semibold tw-px-6 tw-py-3 tw-whitespace-nowrap tw-text-center">
                             <span className=" tw-text-white tw-font-poppins">
-                              Activation
+                              {Number(item[2])}
                             </span>
                           </td>
+
                           <td className="tw-align-middle tw-font-semibold tw-px-6 tw-py-3 tw-whitespace-nowrap tw-text-center">
                             <span className=" tw-text-white tw-font-poppins">
-                              Registration
+                            {Number(item[0])==0?("Registeration"):(null)} {Number(item[0])==1?("upgrade Level"):(null)} {Number(item[0])==2?("Claim Monthly Salary"):(null)} {Number(item[0])==3?("Claim Gift Reward"):(null)}
+
+
                             </span>
                           </td>
                           <td className="tw-align-middle tw-font-semibold tw-px-6 tw-py-2 tw-whitespace-nowrap tw-text-center">
                             <div className=" flex  tw-flex-col">
                               <div>
                                 <span className=" tw-text-white tw-font-poppins">
-                                  22-08-2024
+                                {count(Number(item[1]))}
+
                                 </span>
                               </div>
-                              <div>
+                              {/* <div>
                                 <span className=" tw-text-white tw-font-poppins  tw-font-light">
                                   11:03.45 pm
                                 </span>
-                              </div>
+                              </div> */}
                             </div>
                           </td>
-                        </tr>
-                        <tr className="tw-bg-[#1e1e1e] tw-rounded-md">
+                          </tr>
+                      ))}
+
+                        {/* <tr className="tw-bg-[#1e1e1e] tw-rounded-md">
                           <td className="tw-align-middle  tw-font-semibold tw-px-6 tw-py-3 tw-whitespace-nowrap tw-text-center">
                             <img
                               src={require("../../assets/images/crypto2.png")}
@@ -235,7 +241,7 @@ const PlatFromTable = () => {
                               </div>
                             </div>
                           </td>
-                        </tr>
+                        </tr> */}
                       </>
                     </tbody>
                   </table>

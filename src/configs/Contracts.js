@@ -1,6 +1,42 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0x96430dB076E7b553E074471F2Dc05562645E928E";
+export const cont_address="0x7DFF5159c4BFAb14360338d2AB268802056aa14C";
+export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
+
+export const cont_Name_abi=[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "update_Name",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "myName",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
 
 export const cont_abi=[
 	{
@@ -217,11 +253,16 @@ export const cont_abi=[
 	},
 	{
 		"inputs": [],
-		"name": "get_currTime",
+		"name": "get_currTime_And_historyLength",
 		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "temp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "historylength",
 				"type": "uint256"
 			}
 		],
@@ -377,52 +418,6 @@ export const cont_abi=[
 				"internalType": "address",
 				"name": "add",
 				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "month_no",
-				"type": "uint256"
-			}
-		],
-		"name": "get_monthly_data",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "directs",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Teams",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "badge_no",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "eligibleForGift",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct booster.monthly_data",
-				"name": "",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "add",
-				"type": "address"
 			}
 		],
 		"name": "get_Monthly_GiftReward",
@@ -518,6 +513,35 @@ export const cont_abi=[
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "history",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "action",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "date",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "userID",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "launch_date",
 		"outputs": [
@@ -557,25 +581,6 @@ export const cont_abi=[
 				"internalType": "address",
 				"name": "",
 				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_val",
-				"type": "uint256"
-			}
-		],
-		"name": "randomNo",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -657,8 +662,6 @@ export const cont_abi=[
 		"type": "function"
 	}
 ];
-
-
 
 export const token_abi=[
 	{

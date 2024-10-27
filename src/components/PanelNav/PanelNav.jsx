@@ -10,8 +10,8 @@ import { FiSearch } from "react-icons/fi";
 import { useWeb3Modal,useWeb3ModalTheme,use } from '@web3modal/wagmi/react'
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 
-const PanelNav = () => {
-  // const [open, setOpen] = useState(false);
+const PanelNav = (props) => {
+  const [searchUser, set_searchUser] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,10 +76,15 @@ useEffect(()=>{
         <div className="tw-flex  tw-gap-3 tw-items-center lg:hidden">
         <div className="hidden  tw-relative xl:tw-w-[800px] tw-w-[280px] cursor-pointer tw-hidden sm:tw-block">
           <input
-            placeholder="Search"
+            placeholder="Search User Code"
             className="tw-bg-[#1E1E1E] tw-text-white tw-outline-none tw-pl-12 tw-p-3 tw-rounded-full tw-w-full"
+            type="number"
+            value={searchUser}
+            onChange={(e) =>
+              set_searchUser(e.target.value)
+            }
           />
-          <FiSearch color="#A0A0A0" size={25} className="tw-absolute tw-top-3 tw-left-4" />
+          <FiSearch onClick={()=>props.search_user(searchUser)} color="#A0A0A0" size={25} className="tw-absolute tw-top-3 tw-left-4" />
         </div>
           <div onClick={() => setSearchVisible(!searchVisible)} className="cursor-pointer tw-block sm:tw-hidden">
             <FiSearch color="#A0A0A0" size={25} />

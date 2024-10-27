@@ -2,6 +2,9 @@ import React from "react";
 import Footer from "../../components/footer";
 import { useParams } from "react-router-dom";
 import PanelNav from "../../components/PanelNav/PanelNav";
+import { Tooltip } from "react-tippy";
+// import { Tooltip } from 'react-tooltip'
+import Loader from "../../components/Loader";
 
 const LevelDetails = (props) => {
   const { id } = useParams();
@@ -40,14 +43,31 @@ const LevelDetails = (props) => {
         const isFilled = filledCircles > 0; 
         
         rowDots.push(
+          <Tooltip
+
+          // title={isFilled?("id: "+circleInfo[curr_dot]):(null)}
+          position="top"
+          animation="scale"
+          trigger="click"
+          className="text-white"
+          style={{  color: "white", zIndex:"1000" }}
+          html={(
+            <p style={{  color: "white", zIndex:"1000" }}>
+            {isFilled?("id: "+circleInfo[curr_dot]):(null)}
+            </p>
+          )}    
+
+          >
+
           <span
-          title={isFilled?("id: "+circleInfo[curr_dot]):(null)}
 
             key={`dot-${row}-${i}`}
-            className={`tw-block tw-w-14 tw-h-14 tw-border ${
+            className={`tw-block  tw-w-14 tw-h-14 tw-border ${
               isFilled ? "tw-bg-[#DDA80E] tw-border-[#DDA80E]" : "tw-border-[#DDA80E]"
             } tw-rounded-full tw-inline-block tw-mx-1.5`}
           ></span>
+          </Tooltip>
+
         );
         curr_dot++
         filledCircles--; 
@@ -62,7 +82,7 @@ const LevelDetails = (props) => {
 
   const renderPyramidDots2 = (level,circleInfo) => {
     const rows = [];
-    const layout = [2, 3]; // Define how many dots in each row (2 on top, 3 on bottom)
+    const layout = [2, 3]; 
     let filledCircles = level;
     let curr_dot = 0; 
 
@@ -71,9 +91,28 @@ const LevelDetails = (props) => {
       for (let i = 0; i < dotsInRow; i++) {
         const isFilled = filledCircles > 0;
         rowDots.push(
+
+          <Tooltip
+
+          // title={isFilled?("id: "+circleInfo[curr_dot]):(null)}
+          position="top"
+          animation="scale"
+          trigger="click"
+          theme="light"
+          className="text-white"
+          style={{  color: "white", zIndex:"1000" }}
+          html={(
+            <p style={{  color: "white", zIndex:"1000" }}>
+
+            {isFilled?("id: "+circleInfo[curr_dot]):(null)}
+              
+            </p>
+          )}
+          >
+
+
           <span
           // href="#"
-          title={isFilled?("id: "+circleInfo[curr_dot]):(null)}
             key={`dot-${row}-${i}`}
             className={`tw-block tw-w-14 tw-h-14 tw-border ${
               isFilled ? "tw-bg-[#DDA80E] tw-border-[#DDA80E]" : "tw-border-[#DDA80E]"
@@ -82,7 +121,8 @@ const LevelDetails = (props) => {
 
 
           </span>
-          
+            </Tooltip>
+
         );
         curr_dot++;
         filledCircles--;
@@ -95,8 +135,8 @@ const LevelDetails = (props) => {
 
   return (
     <>
-      <PanelNav />
-      <section className=" ">
+      <PanelNav search_user={props.search_user} />
+      <section className="tw-text-white">
         <div className="container tw-mb-12 tw-mx-auto">
           <div className="tw-flex sm:tw-flex-row tw-flex-col tw-gap-4 tw-justify-center tw-items-center">
             <div className="tw-w-96">
@@ -190,6 +230,8 @@ const LevelDetails = (props) => {
         </div>
       </section>
       <Footer />
+      {props.loader && <Loader />}
+
     </>
   );
 };

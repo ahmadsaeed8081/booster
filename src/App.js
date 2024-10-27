@@ -15,6 +15,8 @@ import {
   cont_abi,
   usdt_address,
   token_abi,
+  cont_Name,
+  cont_Name_abi
 } from "../src/configs/Contracts";
 import { useLocation } from "react-router-dom";
 import { useSwitchChain, useAccount, useDisconnect } from "wagmi";
@@ -50,6 +52,8 @@ function App() {
   const [monthlySalary, set_monthlySalary] = useState(0);
   const [badge, set_badge] = useState(0);
   const [levelData, set_levelData] = useState([]);
+  const [historyData, set_historyData] = useState([]);
+
   const [currLevel, set_currLevel] = useState(0);
   const [uplinerCode, set_uplinerCode] = useState(0);
   const [joiningDate, set_joiningDate] = useState(0);
@@ -60,6 +64,7 @@ function App() {
   const [GiftReward, set_GiftReward] = useState(0);
   const [totalGiftRewWithdraw, set_totalGiftRewWithdraw] = useState(0);
   const [leftTime, set_leftTime] = useState(0);
+  const [myName, set_myName] = useState("");
 
   
   
@@ -82,7 +87,122 @@ function App() {
   },[address])
   
   
-  
+   async function search_user(_refCode)
+   {
+
+    if(_refCode==refCode)
+    {
+      alert("this is your Id, kidnly search different");
+      return;
+
+    }
+
+    if(_refCode==refCode)
+    {
+      alert("this is your Id, kidnly search different");
+      return;
+
+    }
+    if(_refCode<0)
+    {
+      alert("invalid Id");
+      return;
+
+    }
+
+
+    // setLoader(true)
+    const web3= new Web3(new Web3.providers.HttpProvider("https://polygon-bor-rpc.publicnode.com"));
+    const contract=new web3.eth.Contract(cont_abi,cont_address);
+    const contractName=new web3.eth.Contract(cont_Name_abi,cont_Name);
+    const USDT_contract=new web3.eth.Contract(token_abi,usdt_address);
+
+    const search_address = await contract.methods.codeToAdress(_refCode).call();      
+
+    if(search_address=="0x0000000000000000000000000000000000000000")
+    {
+      alert("Given id is not registered");
+      return;
+    }
+    setLoader(true)
+
+    let USDTBalance;
+    let user;
+    let Polbalance;
+    let level_data=[];
+    let history_data=[];
+
+    if(isConnected)
+    {
+       Polbalance  =await  web3.eth.getBalance(search_address)
+       USDTBalance = await USDT_contract.methods.balanceOf(search_address).call(); 
+    
+       user = await contract.methods.user(search_address).call();      
+       let isActiveMember = await contract.methods.check_active_member(search_address).call();
+       let currMonth_badge = await contract.methods.currMonth_badge(search_address).call();
+       let Monthly_salary = await contract.methods.get_Monthly_salary(search_address).call();
+       let GiftReward = await contract.methods.get_Monthly_GiftReward(search_address).call();
+
+       let TotalEarnings= await contract.methods.get_All_TotalEarnings(search_address).call();
+       let curr_level = await contract.methods.get_curr_level(search_address).call();
+       let curr_month = await contract.methods.get_curr_month(search_address).call();
+       let regFee = await contract.methods.regFee().call();
+       let totalusers = await contract.methods.totalusers().call();
+
+       let upliner_data = await contract.methods.user(user[2]).call();
+       let total_directs = await contract.methods.get_totalDirects(search_address).call();
+       let launch_date = await contract.methods.launch_date().call();
+       let data = await contract.methods.get_currTime_And_historyLength().call();
+       let myName = await contractName.methods.myName(search_address).call();
+
+       
+       for(let i=0;i<12;i++)
+       {
+        level_data.push( await contract.methods.get_level_data(search_address,i).call())
+       }
+       for(let i=0;i<data.historylength;i++)
+       {
+        history_data.push( await contract.methods.history(i).call())
+       }
+       set_myName(myName=="" ? "Booster_user"+user[1]:myName)
+       set_total_users(totalusers);
+       set_regFee(regFee)
+      set_isRegister(user[0])
+      set_refCode(user[1])
+      set_upliner(user[2])
+      set_joiningDate(user[6])
+       set_directs(total_directs)
+      set_uplinerCode(upliner_data[1]);
+      set_totalTeam(user[3])
+      set_totalMonthlySalaryWithdraw(user[4])   
+      set_totalGiftRewWithdraw(user[5])             
+      set_isActiveMember(isActiveMember)
+      set_B5Earning(TotalEarnings[1])
+      set_B10Earning(TotalEarnings[2])
+      set_25levelEarning(TotalEarnings[0])
+      set_totalEarning(TotalEarnings[3])
+      set_monthlySalary(Monthly_salary)
+      set_GiftReward(GiftReward)
+
+      set_badge(currMonth_badge)
+      set_levelData(level_data)
+      set_historyData(history_data)
+      set_currLevel(curr_level)
+
+      let  temp=Number(launch_date);
+      for(let i=0;i<Number(curr_month);i++)
+      {
+          temp+= 86400;
+      }
+      
+      temp = 30 - ((Number(curr_month) - temp) /86400);
+
+      set_leftTime(temp * 86400);
+
+      setLoader(false)
+
+    }
+   }
 
 
     async function get_data()
@@ -90,12 +210,16 @@ function App() {
       setLoader(true)
       const web3= new Web3(new Web3.providers.HttpProvider("https://polygon-bor-rpc.publicnode.com"));
       const contract=new web3.eth.Contract(cont_abi,cont_address);
+      const contractName=new web3.eth.Contract(cont_Name_abi,cont_Name);
+
       const USDT_contract=new web3.eth.Contract(token_abi,usdt_address);
   
       let USDTBalance;
       let user;
       let Polbalance;
       let level_data=[];
+      let history_data=[];
+
       if(isConnected)
       {
          Polbalance  =await  web3.eth.getBalance(address)
@@ -116,13 +240,22 @@ function App() {
          let upliner_data = await contract.methods.user(user[2]).call();
          let total_directs = await contract.methods.get_totalDirects(address).call();
          let launch_date = await contract.methods.launch_date().call();
-         let currTime = await contract.methods.get_currTime().call();
+         let data = await contract.methods.get_currTime_And_historyLength().call();
+         let myName = await contractName.methods.myName(address).call();
+
+         
          for(let i=0;i<12;i++)
          {
           level_data.push( await contract.methods.get_level_data(address,i).call())
          }
 
-         console.log(level_data[0]); 
+         for(let i=0;i<data.historylength;i++)
+         {
+          history_data.push( await contract.methods.history(i).call())
+         }
+
+
+         set_myName(myName=="" ? "User_Booster":myName)
          set_total_users(totalusers);
          set_regFee(regFee)
         set_isRegister(user[0])
@@ -144,6 +277,8 @@ function App() {
 
         set_badge(currMonth_badge)
         set_levelData(level_data)
+        set_historyData(history_data)
+
         set_currLevel(curr_level)
 
         let  temp=Number(launch_date);
@@ -325,12 +460,12 @@ function App() {
   return (
     <div className=''>
      <Routes>
-      <Route path='/'  element={<Home loader={loader}  isRegister={isRegister} />} />
-      <Route path='/register'  element={<Register loader={loader} regFee={regFee} isRegister={isRegister} />} />
+      <Route path='/'  element={<Home  loader={loader}  isRegister={isRegister} />} />
+      <Route path='/register'  element={<Register get_data={get_data} loader={loader} regFee={regFee} isRegister={isRegister} />} />
 
-      <Route path='/user-pannel'  element={<UserPannel leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
+      <Route path='/user-pannel'  element={< UserPannel historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
 
-      <Route path='/level-details/:id'  element={<LevelDetails loader={loader} levelData={levelData} />} />
+      <Route path='/level-details/:id'  element={<LevelDetails search_user={search_user} loader={loader} levelData={levelData} />} />
      </Routes>
     </div>
   );
