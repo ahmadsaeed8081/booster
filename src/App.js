@@ -197,12 +197,12 @@ function App() {
       let  temp=Number(launch_date);
       for(let i=0;i<Number(curr_month);i++)
       {
-          temp+= 86400;
+          temp+= (86400*30);
       }
       
-      temp = 30 - ((Number(curr_month) - temp) /86400);
-
-      set_leftTime(temp * 86400);
+      // temp = 30 - ((Number(data.temp) - temp) /86400);
+      alert(Number(data.temp))
+      set_leftTime((Number(data.temp) - temp));
       setLoader(false)
 
     }
@@ -289,12 +289,14 @@ function App() {
         let  temp=Number(launch_date);
         for(let i=0;i<Number(curr_month);i++)
         {
-            temp+= (30*86400);
+            // temp+= (86400*30);
+            temp+= 1800;
+
         }
         
-        temp = 30 - ((Number(curr_month) - (temp/86400)) );
-
-        set_leftTime(temp * 86400);
+        temp = (30*60) - ((Number(data.temp) - temp));
+        // alert(Number(data.temp) - temp)
+        set_leftTime(temp+Number(data.temp));
 
         setLoader(false)
 
