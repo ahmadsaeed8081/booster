@@ -14,7 +14,6 @@ contract booster
         
         //testing
         //last 24h earning
-        //history
         struct level_data{
 
             bool joined;
@@ -121,7 +120,6 @@ contract booster
             address _ref = codeToAdress[ref_code];
             require(!user[msg.sender].isRegister);
             require(user[_ref].isRegister);
-            // require(_ref!=address(0) || _ref!=msg.sender);
 
             totalusers++;         
             user[msg.sender].upliner=_ref;
@@ -159,7 +157,7 @@ contract booster
             if(level_no==0)
             {
                 user[user[msg.sender].upliner].month[get_curr_month()].directs++;
-
+                user[user[msg.sender].upliner].AllDirects.push(msg.sender);
                 if( user[user[msg.sender].upliner].month[get_curr_month()].directs>=5)
                 {
 
@@ -231,26 +229,29 @@ contract booster
                                     remaining_amount-= b_5_10_rew[level_no];
                                     arr[2]=true;
                                 }
+                                
+                                
+                                setCircleUsers(temp_b5, temp, level_no, 0);
 
-                                if(temp_b5/5==1)
-                                {
-                                    user[temp].Level[level_no].b5_total_cycles++;
-                                    user[temp].Level[level_no].b5_count_for_cycle=0;
+                                // if(temp_b5/5==1)
+                                // {
+                                //     user[temp].Level[level_no].b5_total_cycles++;
+                                //     user[temp].Level[level_no].b5_count_for_cycle=0;
                                     
-                                    for(uint k=0;k<4;k++)
-                                    {
-                                        user[temp].Level[level_no].b5_circlesData.pop();
+                                //     for(uint k=0;k<4;k++)
+                                //     {
+                                //         user[temp].Level[level_no].b5_circlesData.pop();
 
-                                    }
+                                //     }
 
 
-                                }
-                                else{
+                                // }
+                                // else{
                                     
-                                    user[temp].Level[level_no].b5_count_for_cycle++;
-                                    user[temp].Level[level_no].b5_circlesData.push(user[msg.sender].ref_code);
+                                //     user[temp].Level[level_no].b5_count_for_cycle++;
+                                //     user[temp].Level[level_no].b5_circlesData.push(user[msg.sender].ref_code);
 
-                                }
+                                // }
                                         
                             }
 
@@ -278,7 +279,7 @@ contract booster
                                     {
                                         
                                         total_earned = get_level_totalEarned(user[temp].AllDirects[j],level_no);
-                                        if(check_active_member(user[temp].AllDirects[j]) && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
+                                        if((check_active_member(user[temp].AllDirects[j]) && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
                                         {
                                             colified_partners[count]=user[temp].AllDirects[j];
                                             count++;
@@ -286,30 +287,40 @@ contract booster
                                         }
 
                                     }
-                                    uint rand_no = randomNo(count);
-                                    temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
-                                    
-                                    if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                    if(count>0)
                                     {
-                                        distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
-                                        remaining_amount-= b_5_10_rew[level_no];
-
-                                        arr[3]=true;
-
-                                    }
-
-                                    if(temp_b10/10==1)
-                                    {
-                                        user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle=0;
-                                        user[colified_partners[rand_no]].Level[level_no].b10_total_cycles++;
-
-                                    }
-                                    else
-                                    {
+                                        uint rand_no = randomNo(count);
+                                        temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
                                         
-                                        user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle++;
+                                        if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                        {
+                                            distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
+                                            remaining_amount-= b_5_10_rew[level_no];
+
+                                            arr[3]=true;
+
+                                        }
+                                        setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
+
+                                        // if(temp_b10/10==1)
+                                        // {
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle=0;
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_total_cycles++;
+                                        //     for(uint k=0;k<9;k++)
+                                        //     {
+                                        //         user[colified_partners[rand_no]].Level[level_no].b10_circlesData.pop();
+                                        //     }
+                                        // }
+                                        // else
+                                        // {
+                                            
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle++;
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
+
+                                        // }
 
                                     }
+
 
                                 }
                                 else if(temp_b10 == 3 || temp_b10 == 8)
@@ -322,59 +333,71 @@ contract booster
                                     {
                                         
                                         total_earned = get_level_totalEarned(user[user[temp].upliner].AllDirects[j],level_no);
-                                        if(check_active_member(user[user[temp].upliner].AllDirects[j]) && (user[user[user[temp].upliner].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
+
+                                        if((check_active_member(user[user[temp].upliner].AllDirects[j]) && (user[user[user[temp].upliner].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
                                         {
                                             colified_partners[count]=user[user[temp].upliner].AllDirects[j];
                                             count++;
-
                                         }
 
                                     }
-                                    uint rand_no = randomNo(count);
-
-                                    temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
-                                    
-                                    if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                    if(count>0)
                                     {
-                                        distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
-                                        remaining_amount-= b_5_10_rew[level_no];
+                                        uint rand_no = randomNo(count);
 
-                                        arr[3]=true;
-
-                                    }
-
-                                    if(temp_b10/10==1)
-                                    {
-                                        user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle=0;
-                                        user[colified_partners[rand_no]].Level[level_no].b10_total_cycles++;
-
-                                    }
-                                    else
-                                    {
+                                        temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
                                         
-                                        user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle++;
+                                        if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                        {
+                                            distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
+                                            remaining_amount-= b_5_10_rew[level_no];
+
+                                            arr[3]=true;
+
+                                        }
+                                        
+                                        setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
+
+                                        // if(temp_b10/10==1)
+                                        // {
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle=0;
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_total_cycles++;
+                                        //         for(uint k=0;k<9;k++)
+                                        //         {
+                                        //             user[colified_partners[rand_no]].Level[level_no].b10_circlesData.pop();
+                                        //         }
+                                        // }
+                                        // else
+                                        // {
+                                            
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle++;
+                                        //     user[colified_partners[rand_no]].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
+
+                                        // }
 
                                     }
-
-
-                                }
-
-                                if(temp_b10/10==1)
-                                {
-                                    user[temp].Level[level_no].b10_count_for_cycle=0;
-                                    user[temp].Level[level_no].b10_total_cycles++;
-                                    for(uint k=0;k<9;k++)
-                                    {
-                                        user[temp].Level[level_no].b10_circlesData.pop();
-                                    }
-                                }
-                                else
-                                {
                                     
-                                    user[temp].Level[level_no].b10_count_for_cycle++;
-                                    user[temp].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
+
 
                                 }
+
+                                setCircleUsers(temp_b10, temp, level_no, 1);
+                                // if(temp_b10/10==1)
+                                // {
+                                //     user[temp].Level[level_no].b10_count_for_cycle=0;
+                                //     user[temp].Level[level_no].b10_total_cycles++;
+                                //     for(uint k=0;k<9;k++)
+                                //     {
+                                //         user[temp].Level[level_no].b10_circlesData.pop();
+                                //     }
+                                // }
+                                // else
+                                // {
+                                    
+                                //     user[temp].Level[level_no].b10_count_for_cycle++;
+                                //     user[temp].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
+
+                                // }
                             }
 
 
@@ -386,6 +409,10 @@ contract booster
                     }
 
                 }
+                else{
+                    break;
+                }
+
             }
                 
 
@@ -463,6 +490,53 @@ contract booster
             }
 
                 
+        }
+
+        function setCircleUsers(uint TotalFilledCircles,address temp,uint level_no, uint option) internal
+        {
+            if(option==0)//b5
+            {
+                if(TotalFilledCircles/5==1)
+                {
+                    user[temp].Level[level_no].b5_total_cycles++;
+                    user[temp].Level[level_no].b5_count_for_cycle=0;
+                    
+                    for(uint k=0;k<4;k++)
+                    {
+                        user[temp].Level[level_no].b5_circlesData.pop();
+
+                    }
+
+
+                }
+                else{
+                    
+                    user[temp].Level[level_no].b5_count_for_cycle++;
+                    user[temp].Level[level_no].b5_circlesData.push(user[msg.sender].ref_code);
+
+                }
+
+            }
+            else if(option==1)//b10
+            {
+                if(TotalFilledCircles/10==1)
+                {
+                    user[temp].Level[level_no].b10_count_for_cycle=0;
+                    user[temp].Level[level_no].b10_total_cycles++;
+                    for(uint k=0;k<9;k++)
+                    {
+                        user[temp].Level[level_no].b10_circlesData.pop();
+                    }
+                }
+                else
+                {
+                    
+                    user[temp].Level[level_no].b10_count_for_cycle++;
+                    user[temp].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
+
+                }
+            }
+
         }
 
 
@@ -712,11 +786,6 @@ contract booster
             return user[add].Level[level_no];
         }
         
-        // function get_monthly_data(address add, uint month_no) public view returns(monthly_data memory)
-        // {
-        //     return user[add].month[month_no];
-
-        // }
 
         function get_All_TotalEarnings(address add) public view returns( uint level25_Earning,uint b5_Earning,uint b10_Earning,uint totalEarned)
         {
@@ -751,7 +820,7 @@ contract booster
         }
         
 
-        function randomNo(uint _val) view internal returns(uint)
+        function randomNo(uint _val) view public returns(uint)
         {
             uint rand_no = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % _val ;
 

@@ -330,7 +330,11 @@ async function updateName1() {
          alert("Kindly Connect your Wallet");
          return;
        }
-       
+       if(props.isDummyState)
+       {
+        alert("You cannot perform any transaction");
+        return;
+       }
        if(!props.isRegister)
        {
          alert("You are not a registered memeber");
@@ -411,7 +415,11 @@ async function updateName1() {
          alert("Kindly Connect your Wallet");
          return;
        }
-       
+       if(props.isDummyState)
+       {
+        alert("You cannot perform any transaction");
+        return;
+       }
        if(!props.isRegister)
        {
          alert("You are not a registered memeber");
@@ -448,7 +456,11 @@ async function updateName1() {
          alert("Kindly Connect your Wallet");
          return;
        }
-       
+       if(props.isDummyState)
+       {
+        alert("You cannot perform any transaction");
+        return;
+       }
        if(!props.isRegister)
        {
          alert("You are not a registered memeber");
@@ -483,7 +495,12 @@ async function updateName1() {
          alert("Kindly Connect your Wallet");
          return;
        }
-       
+       if(props.isDummyState)
+       {
+        alert("You cannot perform any transaction");
+        return;
+       }
+      
        if(!props.isRegister)
        {
          alert("You are not a registered memeber");
