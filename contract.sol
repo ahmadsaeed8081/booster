@@ -14,6 +14,7 @@ contract booster
         
         //testing
         //last 24h earning
+
         struct level_data{
 
             bool joined;
@@ -180,233 +181,174 @@ contract booster
                 temp = user[temp].upliner;    
                 if(temp!=address(0))
                 {
-                    arr[0] = check_active_member(temp);
-                    total_earned = get_level_totalEarned(temp, level_count);
-
-                    if((arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
+                    if(user[temp].Level[level_no].joined)
                     {
-                        if(!arr[1])
-                        {
-                            uint Rew = level_monthly_rew[level_no] * level_percentage[level_count]/100;
-                            distributions( temp,level_count,total_earned,Rew,0);
-                            remaining_amount-=Rew;
-                            level_count++;
-
-
-
-                            if(level_no==0)
-                            {
-                                user[temp].month[get_curr_month()].Teams++;
-                                user[temp].total_team++;
-                            }
-
-                            uint temp_badge = currMonth_badge(temp);
-
-                            if(user[temp].month[get_curr_month()].badge_no != temp_badge)
-                            {
-                                user[temp].month[get_curr_month()].badge_no = temp_badge;
-                                Monthly_badgeCount[get_curr_month()][temp_badge]++;
-                            }
-                            
-                        
-                        }
-
-
-                        total_earned = get_level_totalEarned(temp, level_no);
-                        
+                        arr[0] = check_active_member(temp);
+                        total_earned = get_level_totalEarned(temp, level_count);
+                    
                         if((arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
                         {
-                            if(!arr[2])
+                            if(!arr[1])
                             {
-                                
-                                uint temp_b5 = user[temp].Level[level_no].b5_count_for_cycle+1;
-                        
-                                total_earned = get_level_totalEarned(temp,level_no);
+                                uint Rew = level_monthly_rew[level_no] * level_percentage[level_count]/100;
+                                distributions( temp,level_count,total_earned,Rew,0);
+                                remaining_amount-=Rew;
+                                level_count++;
 
-                                if(temp_b5 == 3 || temp_b5 == 4)
+
+
+                                if(level_no==0)
                                 {
-                                    distributions(temp, level_no, total_earned, b_5_10_rew[level_no], 1);
-                                    remaining_amount-= b_5_10_rew[level_no];
-                                    arr[2]=true;
+                                    user[temp].month[get_curr_month()].Teams++;
+                                    user[temp].total_team++;
+                                }
+
+                                uint temp_badge = currMonth_badge(temp);
+
+                                if(user[temp].month[get_curr_month()].badge_no != temp_badge)
+                                {
+                                    user[temp].month[get_curr_month()].badge_no = temp_badge;
+                                    Monthly_badgeCount[get_curr_month()][temp_badge]++;
                                 }
                                 
-                                
-                                setCircleUsers(temp_b5, temp, level_no, 0);
-
-                                // if(temp_b5/5==1)
-                                // {
-                                //     user[temp].Level[level_no].b5_total_cycles++;
-                                //     user[temp].Level[level_no].b5_count_for_cycle=0;
-                                    
-                                //     for(uint k=0;k<4;k++)
-                                //     {
-                                //         user[temp].Level[level_no].b5_circlesData.pop();
-
-                                //     }
-
-
-                                // }
-                                // else{
-                                    
-                                //     user[temp].Level[level_no].b5_count_for_cycle++;
-                                //     user[temp].Level[level_no].b5_circlesData.push(user[msg.sender].ref_code);
-
-                                // }
-                                        
+                            
                             }
 
-                            if(!arr[3])
+
+                            total_earned = get_level_totalEarned(temp, level_no);
+                            
+                            if((arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
                             {
-                                uint temp_b10 = user[temp].Level[level_no].b10_count_for_cycle+1;
-
-                                if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                if(!arr[2])
                                 {
+                                    
+                                    uint temp_b5 = user[temp].Level[level_no].b5_count_for_cycle+1;
+                            
+                                    total_earned = get_level_totalEarned(temp,level_no);
 
-                                    distributions(temp, level_no, total_earned, b_5_10_rew[level_no],2);
-                                    remaining_amount-= b_5_10_rew[level_no];
-                                    arr[3]=true;
-
-                                }
-                                else if(temp_b10 == 4 || temp_b10 == 9)
-                                {
-
-                                
-                                    // one of direct partner
-                                    uint count;
-                                    address[] memory colified_partners=new address[](user[temp].AllDirects.length);
-
-                                    for(uint j =0;j<user[temp].AllDirects.length;j++)
+                                    if(temp_b5 == 3 || temp_b5 == 4)
                                     {
-                                        
-                                        total_earned = get_level_totalEarned(user[temp].AllDirects[j],level_no);
-                                        if((check_active_member(user[temp].AllDirects[j]) && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
-                                        {
-                                            colified_partners[count]=user[temp].AllDirects[j];
-                                            count++;
-
-                                        }
-
-                                    }
-                                    if(count>0)
-                                    {
-                                        uint rand_no = randomNo(count);
-                                        temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
-                                        
-                                        if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
-                                        {
-                                            distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
-                                            remaining_amount-= b_5_10_rew[level_no];
-
-                                            arr[3]=true;
-
-                                        }
-                                        setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
-
-                                        // if(temp_b10/10==1)
-                                        // {
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle=0;
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_total_cycles++;
-                                        //     for(uint k=0;k<9;k++)
-                                        //     {
-                                        //         user[colified_partners[rand_no]].Level[level_no].b10_circlesData.pop();
-                                        //     }
-                                        // }
-                                        // else
-                                        // {
-                                            
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle++;
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
-
-                                        // }
-
-                                    }
-
-
-                                }
-                                else if(temp_b10 == 3 || temp_b10 == 8)
-                                {
-
-                                    uint count;
-                                    address[] memory colified_partners=new address[](user[user[temp].upliner].AllDirects.length);
-
-                                    for(uint j =0;j<user[user[temp].upliner].AllDirects.length;j++)
-                                    {
-                                        
-                                        total_earned = get_level_totalEarned(user[user[temp].upliner].AllDirects[j],level_no);
-
-                                        if((check_active_member(user[user[temp].upliner].AllDirects[j]) && (user[user[user[temp].upliner].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
-                                        {
-                                            colified_partners[count]=user[user[temp].upliner].AllDirects[j];
-                                            count++;
-                                        }
-
-                                    }
-                                    if(count>0)
-                                    {
-                                        uint rand_no = randomNo(count);
-
-                                        temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
-                                        
-                                        if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
-                                        {
-                                            distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
-                                            remaining_amount-= b_5_10_rew[level_no];
-
-                                            arr[3]=true;
-
-                                        }
-                                        
-                                        setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
-
-                                        // if(temp_b10/10==1)
-                                        // {
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle=0;
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_total_cycles++;
-                                        //         for(uint k=0;k<9;k++)
-                                        //         {
-                                        //             user[colified_partners[rand_no]].Level[level_no].b10_circlesData.pop();
-                                        //         }
-                                        // }
-                                        // else
-                                        // {
-                                            
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle++;
-                                        //     user[colified_partners[rand_no]].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
-
-                                        // }
-
+                                        distributions(temp, level_no, total_earned, b_5_10_rew[level_no], 1);
+                                        remaining_amount-= b_5_10_rew[level_no];
+                                        arr[2]=true;
                                     }
                                     
+                                    
+                                    setCircleUsers(temp_b5, temp, level_no, 0);
 
+
+                                            
+                                }
+
+                                if(!arr[3])
+                                {
+                                    uint temp_b10 = user[temp].Level[level_no].b10_count_for_cycle+1;
+
+                                    if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                    {
+
+                                        distributions(temp, level_no, total_earned, b_5_10_rew[level_no],2);
+                                        remaining_amount-= b_5_10_rew[level_no];
+                                        arr[3]=true;
+
+                                    }
+                                    else if(temp_b10 == 4 || temp_b10 == 9)
+                                    {
+
+                                    
+                                        // one of direct partner
+                                        uint count;
+                                        address[] memory colified_partners=new address[](user[temp].AllDirects.length);
+
+                                        for(uint j =0;j<user[temp].AllDirects.length;j++)
+                                        {
+                                            
+                                            total_earned = get_level_totalEarned(user[temp].AllDirects[j],level_no);
+                                            if((check_active_member(user[temp].AllDirects[j]) && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
+                                            {
+                                                colified_partners[count]=user[temp].AllDirects[j];
+                                                count++;
+
+                                            }
+
+                                        }
+                                        if(count>0)
+                                        {
+                                            uint rand_no = randomNo(count);
+                                            temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
+                                            
+                                            if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                            {
+                                                distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
+                                                remaining_amount-= b_5_10_rew[level_no];
+
+                                                arr[3]=true;
+
+                                            }
+                                            setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
+
+
+
+                                        }
+
+
+                                    }
+                                    else if(temp_b10 == 3 || temp_b10 == 8)
+                                    {
+
+                                        uint count;
+                                        address[] memory colified_partners=new address[](user[user[temp].upliner].AllDirects.length);
+
+                                        for(uint j =0;j<user[user[temp].upliner].AllDirects.length;j++)
+                                        {
+                                            
+                                            total_earned = get_level_totalEarned(user[user[temp].upliner].AllDirects[j],level_no);
+
+                                            if((check_active_member(user[user[temp].upliner].AllDirects[j]) && (user[user[user[temp].upliner].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
+                                            {
+                                                colified_partners[count]=user[user[temp].upliner].AllDirects[j];
+                                                count++;
+                                            }
+
+                                        }
+                                        if(count>0)
+                                        {
+                                            uint rand_no = randomNo(count);
+
+                                            temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
+                                            
+                                            if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                            {
+                                                distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
+                                                remaining_amount-= b_5_10_rew[level_no];
+
+                                                arr[3]=true;
+
+                                            }
+                                            
+                                            setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
+
+
+
+                                        }
+                                        
+
+
+                                    }
+
+                                    setCircleUsers(temp_b10, temp, level_no, 1);
 
                                 }
 
-                                setCircleUsers(temp_b10, temp, level_no, 1);
-                                // if(temp_b10/10==1)
-                                // {
-                                //     user[temp].Level[level_no].b10_count_for_cycle=0;
-                                //     user[temp].Level[level_no].b10_total_cycles++;
-                                //     for(uint k=0;k<9;k++)
-                                //     {
-                                //         user[temp].Level[level_no].b10_circlesData.pop();
-                                //     }
-                                // }
-                                // else
-                                // {
-                                    
-                                //     user[temp].Level[level_no].b10_count_for_cycle++;
-                                //     user[temp].Level[level_no].b10_circlesData.push(user[msg.sender].ref_code);
 
-                                // }
                             }
+
+                            
 
 
                         }
-
-                        
-
-
                     }
+                    
 
                 }
                 else{

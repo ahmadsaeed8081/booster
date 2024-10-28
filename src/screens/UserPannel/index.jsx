@@ -609,7 +609,7 @@ async function updateName1() {
                     <div className=" tw-flex tw-gap-4">
                       <div>
                         <p className=" m-0 tw-text-white  tw-font-poppins  tw-font-light">
-                          {isConnected? address.slice(0,3)+"..."+address.slice(39,42) :null }
+                          {isConnected? props.user_address.slice(0,3)+"..."+props.user_address.slice(39,42) :null }
                         </p>
                         <p className=" m-0 tw-text-white tw-font-poppins tw-text-xl tw-font-medium">
                           ID : {Number(props.refCode)}
@@ -617,7 +617,7 @@ async function updateName1() {
                       </div>
                       <div>
 
-                      <CopyToClipboard text={address} >
+                      <CopyToClipboard text={props.user_address} >
 
                       <img
                         onClick={copyAddress}
@@ -770,7 +770,7 @@ async function updateName1() {
                         </p>
                       </div>
                       <div>
-                      <CopyToClipboard text={isConnected? `${window.location.host}?ref=${address}`:null} >
+                      <CopyToClipboard text={isConnected? `${window.location.host}?ref=${props.user_address}`:null} >
 
                         <img
                         onClick={notify}
@@ -783,9 +783,9 @@ async function updateName1() {
                     </div>
 
                     <h6 className=" tw-text-white tw-font-poppins tw-pt-2">
-                    {window.location.host}/?ref={address == null
+                    {window.location.host}/?ref={props.user_address == null
                         ? "..."
-                        : address.toString().slice(0, 3) + "..."+address.toString().slice(39, 42) }                    
+                        : props.user_address.toString().slice(0, 3) + "..."+props.user_address.toString().slice(39, 42) }                    
                         </h6>
                   </div>
                 </div>

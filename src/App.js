@@ -41,6 +41,8 @@ function App() {
 
   const [isRegister, set_isRegister] = useState(0);
   const [refCode, set_refCode] = useState(0);
+  const [user_address, set_user_address] = useState("");
+
   const [upliner, set_upliner] = useState(0);
   const [totalTeam, set_totalTeam] = useState(0);
   const [totalMonthlySalaryWithdraw, set_totalMonthlySalaryWithdraw] = useState(0);
@@ -165,6 +167,7 @@ function App() {
        {
         history_data.push( await contract.methods.history(i).call())
        }
+       set_user_address(search_address)
        set_myName(myName=="" ? "Booster_user"+user[1]:myName)
        set_total_users(totalusers);
        set_regFee(regFee)
@@ -255,6 +258,7 @@ function App() {
           history_data.push( await contract.methods.history(i).call())
          }
 
+         set_user_address(address)
 
          set_myName(myName=="" ? "User_Booster":myName)
          set_total_users(totalusers);
@@ -285,10 +289,10 @@ function App() {
         let  temp=Number(launch_date);
         for(let i=0;i<Number(curr_month);i++)
         {
-            temp+= 86400;
+            temp+= (30*86400);
         }
         
-        temp = 30 - ((Number(curr_month) - temp) /86400);
+        temp = 30 - ((Number(curr_month) - (temp/86400)) );
 
         set_leftTime(temp * 86400);
 
@@ -464,7 +468,7 @@ function App() {
       <Route path='/'  element={<Home  loader={loader}  isRegister={isRegister} />} />
       <Route path='/register'  element={<Register get_data={get_data} loader={loader} regFee={regFee} isRegister={isRegister} />} />
 
-      <Route path='/user-pannel'  element={< UserPannel isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
+      <Route path='/user-pannel'  element={< UserPannel user_address={user_address} isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
 
       <Route path='/level-details/:id'  element={<LevelDetails search_user={search_user} loader={loader} levelData={levelData} />} />
      </Routes>
