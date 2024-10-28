@@ -93,9 +93,15 @@ useEffect(()=>{
             <div className="tw-absolute tw-left-2 tw-top-9 tw-w-[75%]">
               <input
                 placeholder="Search"
-                className="tw-bg-[#1E1E1E] tw-pl-12 tw-p-3 tw-w-full tw-rounded-full"
+                className="tw-bg-[#1E1E1E] tw-text-white tw-pl-12 tw-p-3 tw-w-full tw-rounded-full"
+                type="number"
+                value={searchUser}
+                onChange={(e) =>
+                  set_searchUser(e.target.value)
+                }
               />
               <FiSearch
+              onClick={()=>props.search_user(searchUser)}
                 color="#A0A0A0"
                 size={25}
                 className="tw-absolute tw-top-3 tw-left-4"

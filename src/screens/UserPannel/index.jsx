@@ -1042,7 +1042,7 @@ async function updateName1() {
                             scope="col"
                             className=" tw-text-white tw-font-normal  tw-font-poppins  tw-px-6 tw-py-4"
                           >
-                            Total Eamed
+                            Total Earned
                           </th>
                         </tr>
                       </thead>
@@ -1056,12 +1056,12 @@ async function updateName1() {
                             </td>
                             <td className="tw-align-middle tw-font-semibold tw-px-6 tw-py-3 tw-whitespace-nowrap tw-text-center">
                               <span className=" tw-text-[#F0DE75] tw-font-normal tw-text-sm tw-font-poppins">
-                                81
+                                0
                               </span>
                             </td>
                             <td className="tw-align-middle tw-font-semibold tw-px-6 tw-py-2 tw-whitespace-nowrap tw-text-center">
                               <span className=" tw-text-[#F0DE75] tw-text-sm tw-font-normal tw-font-poppins">
-                                495599.80
+                                $0
                               </span>
                             </td>
                           </tr>
