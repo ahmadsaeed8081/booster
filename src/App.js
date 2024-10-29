@@ -150,7 +150,7 @@ function App() {
        let curr_level = await contract.methods.get_curr_level(search_address).call();
        let curr_month = await contract.methods.get_curr_month(search_address).call();
        let regFee = await contract.methods.regFee().call();
-       let totalusers = await contract.methods.totalusers().call();
+       let totalusers = 0;
 
        let upliner_data = await contract.methods.user(user[2]).call();
        let total_directs = await contract.methods.get_totalDirects(search_address).call();
@@ -197,14 +197,14 @@ function App() {
       let  temp=Number(launch_date);
       for(let i=0;i<Number(curr_month);i++)
       {
-          temp+= (86400*30);
-      }
-      
-      // temp = 30 - ((Number(data.temp) - temp) /86400);
-      alert(Number(data.temp))
-      set_leftTime((Number(data.temp) - temp));
-      setLoader(false)
+          // temp+= (86400*30);
+          temp+= 3600;
 
+      }
+      temp = (60*60) - ((Number(data.temp) - temp));
+      set_leftTime(temp+Number(data.temp));
+
+      setLoader(false)
     }
    }
 
@@ -239,7 +239,7 @@ function App() {
          let curr_level = await contract.methods.get_curr_level(address).call();
          let curr_month = await contract.methods.get_curr_month(address).call();
          let regFee = await contract.methods.regFee().call();
-         let totalusers = await contract.methods.totalusers().call();
+         let totalusers = 0;
 
          let upliner_data = await contract.methods.user(user[2]).call();
          let total_directs = await contract.methods.get_totalDirects(address).call();
@@ -290,12 +290,10 @@ function App() {
         for(let i=0;i<Number(curr_month);i++)
         {
             // temp+= (86400*30);
-            temp+= 1800;
+            temp+= 3600;
 
         }
-        
-        temp = (30*60) - ((Number(data.temp) - temp));
-        // alert(Number(data.temp) - temp)
+        temp = (60*60) - ((Number(data.temp) - temp));
         set_leftTime(temp+Number(data.temp));
 
         setLoader(false)

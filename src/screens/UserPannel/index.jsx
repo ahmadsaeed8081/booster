@@ -32,7 +32,16 @@ const UserPannel = (props) => {
   const notify = () => toast("Referral link is copied!");
   const copyAddress = () => toast("Address is copied!");
 
-
+  useEffect(() => {
+    const unloadCallback1 = (event) => {
+      event.preventDefault();
+      alert("nkjnkj n jn")
+      return "";
+    };
+  
+    window.addEventListener("beforeunload", unloadCallback1);
+    // return () => window.removeEventListener("beforeunload", unloadCallback1);
+  }, []);
 
   const Level = [
     {

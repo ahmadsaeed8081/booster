@@ -1,6 +1,6 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0x2C841baf857864274425cEA6fb675D4e1A6Cedf7";
+export const cont_address="0xA70Ba106df2AA5cF3e261b7910f7E54390Fb9909";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
@@ -85,6 +85,19 @@ export const cont_abi=[
 			}
 		],
 		"name": "update_regFee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newCode",
+				"type": "address"
+			}
+		],
+		"name": "updateCode",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -263,44 +276,6 @@ export const cont_abi=[
 			{
 				"internalType": "uint256",
 				"name": "historylength",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "add",
-				"type": "address"
-			}
-		],
-		"name": "get_Last30Days_directs",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "total_directs",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "add",
-				"type": "address"
-			}
-		],
-		"name": "get_Last60Days_l2_Upgrade",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "total_directs",
 				"type": "uint256"
 			}
 		],
@@ -588,20 +563,20 @@ export const cont_abi=[
 	},
 	{
 		"inputs": [],
-		"name": "regFee",
+		"name": "proxiableUUID",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "bytes32",
 				"name": "",
-				"type": "uint256"
+				"type": "bytes32"
 			}
 		],
-		"stateMutability": "view",
+		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "totalusers",
+		"name": "regFee",
 		"outputs": [
 			{
 				"internalType": "uint256",

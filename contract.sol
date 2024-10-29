@@ -9,7 +9,23 @@ interface Token {
     function allowance(address owner, address spender) external view returns (uint256);
 
     }
-contract booster
+    contract Proxiable {
+    // Code position in storage is keccak256("PROXIABLE") = "0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7"
+
+    function updateCodeAddress(address newAddress) internal {
+        require(
+            bytes32(0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7) == Proxiable(newAddress).proxiableUUID()
+        );
+        assembly { // solium-disable-line
+            sstore(0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7, newAddress)
+        }
+    }
+
+    function proxiableUUID() public pure returns (bytes32) {
+        return 0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7;
+    }
+} 
+contract booster is Proxiable
     {
         
         //testing
@@ -38,7 +54,6 @@ contract booster
             uint Teams;
             uint badge_no;
             bool eligibleForGift;
-            uint earning;
         }
 
 
@@ -70,26 +85,39 @@ contract booster
         uint[12]  level_monthly_rew=[1*10**6,2*10**6,4*10**6,6*10**6,10*10**6,15*10**6,30*10**6,60*10**6,120*10**6,240*10**6,480*10**6,960*10**6];
         uint[12]  game_gift_rew=[500000,2*10**6,3*10**6,5*10**6,8*10**6,13*10**6,26*10**6,52*10**6,104*10**6,208*10**6,416*10**6,832*10**6];
         uint[12]  income_restriction=[36*10**6,104*10**6,208*10**6,380*10**6,652*10**6,1196*10**6,2284*10**6,4460*10**6,8112*10**6,16816*10**6,34224*10**6,1000000000000*10**6];
+        uint[6]   badge_Salary=[4*10**6,8*10**6,12*10**6,16*10**6,20*10**6,40*10**6];
 
       
-        address usdt_address= 0x341343568948459e5b7017eDDb05110cfA3EF699; 
+        address usdt_address;
+        uint  time_divider;
+        uint totalusers;
 
-        // uint total_levels=12;
-        uint public totalusers;
+        uint public launch_date;
+        uint public game_liquidity;
+        uint public regFee;
+        address public owner;
+
         mapping(address=>Data) public user;
         mapping(uint=>address) public codeToAdress;
-        uint public launch_date;
-        uint  time_divider=30 minutes;
-        uint public game_liquidity;
         mapping(uint=>uint) public gift_liquidity;
         mapping(uint=>uint) public MonthlySalary_liquidity;
+
         mapping(uint=>mapping(uint=>uint))  Monthly_badgeCount;
         mapping(uint=>uint)  eachMonth_TotalgiftRewUsers;
+
+        address[] admins;
+        mapping(address=>bool) Is_PlatinumAddresses;
+
         history_data[] public history;
 
-        uint public regFee=0.001 ether;
-        address public owner;
-        address[] admins;
+
+
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }  
+
 
 
         constructor()
@@ -99,9 +127,10 @@ contract booster
             user[msg.sender].ref_code=totalusers;
             codeToAdress[totalusers]=msg.sender;
             user[msg.sender].registration_time=block.timestamp;
-            
+            usdt_address= 0x341343568948459e5b7017eDDb05110cfA3EF699;
             launch_date=block.timestamp;
-
+            time_divider=60 minutes;
+            regFee=0.001 ether;
             for(uint i=0;i<12;i++)
             {
                 user[msg.sender].Level[i].joined=true;
@@ -112,6 +141,9 @@ contract booster
             admins.push(0xd96aA39DE8DD0858F0764A62ecd86faf8988ab81);
             admins.push(0xbd523407784420B3c66630AD6Cdb553369a65697);
             admins.push(0x73167BE4d0cF2489A246249BF901f5939E82208e);
+
+
+
 
         }
 
@@ -141,7 +173,6 @@ contract booster
         
         function unlock_level(uint level_no) external
         {
-            // require(level_no<12);
             require(user[msg.sender].isRegister);
             require(!user[msg.sender].Level[level_no].joined);
 
@@ -150,7 +181,6 @@ contract booster
                 require(user[msg.sender].Level[level_no-1].joined);
             }
             
-            // require(Token(usdt_address).allowance(msg.sender,address(this))>=level_fee[level_no]);
             uint remaining_amount = level_fee[level_no];
             user[msg.sender].Level[level_no].joined=true;
             user[msg.sender].Level[level_no].level_join_date = block.timestamp;
@@ -163,7 +193,9 @@ contract booster
                 {
 
                     user[user[msg.sender].upliner].month[get_curr_month()].eligibleForGift=true;
+                    eachMonth_TotalgiftRewUsers[get_curr_month()]++;
                 }
+
 
             }
 
@@ -186,9 +218,10 @@ contract booster
                         arr[0] = check_active_member(temp);
                         total_earned = get_level_totalEarned(temp, level_count);
                     
-                        if((arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
+                        if(arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
                         {
-                            if(!arr[1])
+
+                            if(!arr[1] && user[temp].Level[1].joined)
                             {
                                 uint Rew = level_monthly_rew[level_no] * level_percentage[level_count]/100;
                                 distributions( temp,level_count,total_earned,Rew,0);
@@ -217,7 +250,7 @@ contract booster
 
                             total_earned = get_level_totalEarned(temp, level_no);
                             
-                            if((arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
+                            if(arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) 
                             {
                                 if(!arr[2])
                                 {
@@ -264,7 +297,7 @@ contract booster
                                         {
                                             
                                             total_earned = get_level_totalEarned(user[temp].AllDirects[j],level_no);
-                                            if((check_active_member(user[temp].AllDirects[j]) && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
+                                            if(check_active_member(user[temp].AllDirects[j]) && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
                                             {
                                                 colified_partners[count]=user[temp].AllDirects[j];
                                                 count++;
@@ -301,12 +334,12 @@ contract booster
 
                                         for(uint j =0;j<user[user[temp].upliner].AllDirects.length;j++)
                                         {
-                                            
-                                            total_earned = get_level_totalEarned(user[user[temp].upliner].AllDirects[j],level_no);
+                                            address temp_Upliner = user[user[temp].upliner].AllDirects[j];
+                                            total_earned = get_level_totalEarned(temp_Upliner,level_no);
 
-                                            if((check_active_member(user[user[temp].upliner].AllDirects[j]) && (user[user[user[temp].upliner].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) || get_curr_month() < 2)
+                                            if(check_active_member(temp_Upliner) && (user[temp_Upliner].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) 
                                             {
-                                                colified_partners[count]=user[user[temp].upliner].AllDirects[j];
+                                                colified_partners[count]=temp_Upliner;
                                                 count++;
                                             }
 
@@ -484,7 +517,7 @@ contract booster
 
         function check_active_member(address add) public view returns(bool)
         {
-            if(get_Last30Days_directs(add) > 0  &&  get_Last60Days_l2_Upgrade(add) > 0 ) //check active member
+            if((get_Last30Days_directs(add) > 0  &&  get_Last60Days_l2_Upgrade(add) > 0 ) || get_user_month(add) < 2) //check active member
             {
                 return true;
             }
@@ -512,22 +545,23 @@ contract booster
             {
                 badge_no=6;
             }
-            else if(my_level == 10 && total_team >= 10000 && active_members>=13 && curr_month_directs >= 2 && curr_month_Teams>=2000 && levelcount[5]>=15 && levelcount[6]>=5 && levelcount[7]>=2)
+            else if(my_level >= 10 && total_team >= 10000 && active_members>=13 && curr_month_directs >= 2 && curr_month_Teams>=2000 && levelcount[5]>=15 && levelcount[6]>=5 && levelcount[7]>=2)
             {
                 badge_no=5;
             }            
-            else if(my_level == 8 && total_team >= 4500 && active_members>=10 && curr_month_directs >= 2 && curr_month_Teams>=800 && levelcount[4]>=15 && levelcount[5]>=5 && levelcount[6]>=2)
+            else if(my_level >= 8 && total_team >= 4500 && active_members>=10 && curr_month_directs >= 2 && curr_month_Teams>=800 && levelcount[4]>=15 && levelcount[5]>=5 && levelcount[6]>=2)
             {
                 badge_no=4;
             }            
-            else if(my_level == 7 && total_team >= 1500 && active_members>=7 && curr_month_directs >= 2 && curr_month_Teams>=450 && levelcount[3]>=15 && levelcount[4]>=5 && levelcount[5]>=2)
+            else if(my_level >= 7 && total_team >= 1500 && active_members>=7 && curr_month_directs >= 2 && curr_month_Teams>=450 && levelcount[3]>=15 && levelcount[4]>=5 && levelcount[5]>=2)
             {
                 badge_no=3;
             }            
-            else if(my_level == 5 && total_team >= 500 && active_members>=4 && curr_month_directs >= 2 && curr_month_Teams>=100 && levelcount[1]>=15 && levelcount[2]>=5 && levelcount[3]>=2)
+            else if(my_level >= 5 && total_team >= 500 && active_members>=4 && curr_month_directs >= 2 && curr_month_Teams>=100 && levelcount[1]>=15 && levelcount[2]>=5 && levelcount[3]>=2)
             {
                 badge_no=2;
-            }            
+            }    
+        
             else if(my_level == 4 && total_team >= 100 && active_members>=2 && curr_month_directs >= 2 && curr_month_Teams>=30 && levelcount[1]>=5 && levelcount[2]>=2)
             {
                 badge_no=1;
@@ -537,7 +571,7 @@ contract booster
 
         }
 
-        function get_Last30Days_directs(address add) public view returns( uint total_directs)
+        function get_Last30Days_directs(address add) internal view returns( uint total_directs)
         {
             uint start_date = block.timestamp - time_divider;
 
@@ -555,7 +589,7 @@ contract booster
 
         }
         
-        function get_Last60Days_l2_Upgrade(address add) public view returns( uint total_directs)
+        function get_Last60Days_l2_Upgrade(address add) internal view returns( uint total_directs)
         {
             uint start_date = block.timestamp - time_divider;
 
@@ -581,6 +615,11 @@ contract booster
 
             }
 
+            function get_user_month(address add) view internal returns(uint curr_month)
+            {
+                return (block.timestamp - user[add].Level[0].level_join_date) / time_divider;
+
+            }
             function get_curr_level(address add) view public returns(uint curr_level)
             {
                 for(uint i=0;i<12;i++)
@@ -616,7 +655,7 @@ contract booster
                     
                     next_member_count+=user[direct_members[k]].AllDirects.length;
 
-                    if(get_Last30Days_directs(direct_members[k]) > 0  &&  get_Last60Days_l2_Upgrade(direct_members[k]) > 0 ) //check active member
+                    if(check_active_member(direct_members[k])) //check active member
                     {
                         active_members++;
                     }
@@ -663,9 +702,9 @@ contract booster
             uint total_salary;
             for(uint i=0;i<total_months;i++)
             {
-                if(user[add].month[i].badge_no==1)
+                if(user[add].month[i].badge_no>0) //bronze
                 {
-                    total_salary += MonthlySalary_liquidity[i] / Monthly_badgeCount[i][user[add].month[i].badge_no]; 
+                    total_salary += (((MonthlySalary_liquidity[i] * badge_Salary[(user[add].month[i].badge_no)-1])/100*10**6) / Monthly_badgeCount[i][user[add].month[i].badge_no]); 
                 }
 
             }
@@ -673,7 +712,7 @@ contract booster
             return total_salary - user[add].total_salary_withdraw;
         }
 
-        function withdraw_Monthly_salary() public returns(bool)
+        function withdraw_Monthly_salary() external returns(bool)
         {
             uint temp=get_Monthly_salary(msg.sender);
             require(temp>0);
@@ -711,7 +750,7 @@ contract booster
 
         function withdraw_GiftRew() external returns(bool)
         {
-            uint temp=get_Monthly_salary(msg.sender);
+            uint temp=get_Monthly_GiftReward(msg.sender);
             require(temp>0);
 
             Token(usdt_address).transfer(msg.sender,temp);
@@ -722,14 +761,46 @@ contract booster
             return true;
         }
 
+        function updateHistory(uint _action) internal 
+        {
+            history_data memory temp; 
+            temp.action = _action;
+            temp.date = block.timestamp;
+            temp.userID = user[msg.sender].ref_code;
+            if(history.length>5)
+            {
+                history.pop();
+            }
+            history.push(temp);
+        }
 
-        function get_level_data(address add, uint level_no) public view returns(level_data memory)
+        function admin_FundDistributions(uint _amount,uint choosed_currency) internal
+        {
+            _amount=_amount/admins.length;
+
+
+            for(uint i=0;i<admins.length;i++)
+            {
+                if(choosed_currency==0) //usdt
+                {
+                    Token(usdt_address).transferFrom(msg.sender,admins[i],_amount);
+                }
+                else if(choosed_currency==0) //pol
+                {
+                    payable(admins[i]).transfer(_amount); 
+                }
+            }
+
+        }
+
+
+        function get_level_data(address add, uint level_no) external view returns(level_data memory)
         {
             return user[add].Level[level_no];
         }
         
 
-        function get_All_TotalEarnings(address add) public view returns( uint level25_Earning,uint b5_Earning,uint b10_Earning,uint totalEarned)
+        function get_All_TotalEarnings(address add) external view returns( uint level25_Earning,uint b5_Earning,uint b10_Earning,uint totalEarned)
         {
             for(uint i=0;i<25;i++)
             {
@@ -762,7 +833,7 @@ contract booster
         }
         
 
-        function randomNo(uint _val) view public returns(uint)
+        function randomNo(uint _val) view internal returns(uint)
         {
             uint rand_no = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % _val ;
 
@@ -774,55 +845,24 @@ contract booster
             return user[add].AllDirects.length;
         }
         
-
-
-        function admin_FundDistributions(uint _amount,uint choosed_currency) internal
-        {
-            _amount=_amount/admins.length;
-
-            if(choosed_currency==0) //usdt
-            {
-                for(uint i=0;i<admins.length;i++)
-                {
-                    Token(usdt_address).transferFrom(msg.sender,admins[i],_amount);
-                }
-
-            }
-            else if(choosed_currency==0) //pol
-            {
-                for(uint i=0;i<admins.length;i++)
-                {
-                    payable(admins[i]).transfer(_amount); 
-                }
-            }
-
-
-        }
         
-        function update_regFee(uint val) external
-        {
-            require(msg.sender==owner);
-            regFee = val;
-        }
-
-
         function get_currTime_And_historyLength() external view returns(uint temp,uint historylength)
         {
             return (block.timestamp,history.length);
         }
 
-        function updateHistory(uint _action) internal 
+        //update functions
+
+        function update_regFee(uint val) onlyOwner external
         {
-            history_data memory temp; 
-            temp.action = _action;
-            temp.date = block.timestamp;
-            temp.userID = user[msg.sender].ref_code;
-            if(history.length>5)
-            {
-                history.pop();
-            }
-            history.push(temp);
+            regFee = val;
         }
+
+        function updateCode(address newCode) onlyOwner external 
+        {
+            updateCodeAddress(newCode);
+        }
+
 
 
     }
