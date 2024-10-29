@@ -537,7 +537,7 @@ contract booster is Proxiable
 
             uint my_level = get_curr_level(_add);
             
-            if(IslevelFreeze(_add,my_level))
+            if(IslevelFreeze(_add,my_level-1))
             {
                 return 0;
             }
