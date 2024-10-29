@@ -128,6 +128,7 @@ contract booster is Proxiable
             codeToAdress[totalusers]=msg.sender;
             user[msg.sender].registration_time=block.timestamp;
             usdt_address= 0x341343568948459e5b7017eDDb05110cfA3EF699;
+
             launch_date=block.timestamp;
             time_divider = 60 minutes;
             regFee=0.001 ether;
@@ -145,6 +146,7 @@ contract booster is Proxiable
         }
 
         function register(uint ref_code) external payable returns(bool) 
+
         {
             require(msg.value>=regFee);
             address _ref = codeToAdress[ref_code];
@@ -220,7 +222,7 @@ contract booster is Proxiable
                         }
 
                         arr[0] = check_active_member(temp);
-                        total_earned = get_level_totalEarned(temp, level_count);
+                        total_earned = get_level_totalEarned(temp, level_no);
 
                         if(arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
                         {
@@ -394,17 +396,19 @@ contract booster is Proxiable
                 
 
             Token(usdt_address).transferFrom(msg.sender,address(this),level_monthly_rew[level_no]);
+            MonthlySalary_liquidity[get_curr_month()]+=level_monthly_rew[level_no];
 
             Token(usdt_address).transferFrom(msg.sender,address(this),game_gift_rew[level_no]);
             gift_liquidity[get_curr_month()]+=game_gift_rew[level_no];
+
             remaining_amount-= (level_monthly_rew[level_no]+game_gift_rew[level_no]);
 
             if(level_no>0)
             {
 
-                Token(usdt_address).transferFrom(msg.sender,address(this),level_monthly_rew[level_no]);
+                Token(usdt_address).transferFrom(msg.sender,address(this),game_gift_rew[level_no]);
                 game_liquidity += game_gift_rew[level_no];
-                remaining_amount-= level_monthly_rew[level_no];
+                remaining_amount-= game_gift_rew[level_no];
 
             }
             
@@ -425,11 +429,11 @@ contract booster is Proxiable
         {
             uint admin_rew;
 
-            if(total_earned + rew > income_restriction[level_count])
+            if((total_earned + rew) > income_restriction[level_count])
             {
-                admin_rew = (total_earned + rew)- income_restriction[level_count];
+                admin_rew = (total_earned + rew) - income_restriction[level_count];
                 Token(usdt_address).transferFrom(msg.sender,temp,rew-admin_rew);
-                admin_FundDistributions(rew-admin_rew,0);
+                admin_FundDistributions(admin_rew,0);
 
                 if(_val==0)
                 {
@@ -532,46 +536,105 @@ contract booster is Proxiable
         }
 
 
+        // function currMonth_badge(address _add) public view returns(uint )
+        // {
+
+        //     uint my_level = get_curr_level(_add);
+            // if(my_level==0)
+            // {
+            //     return 0;
+
+            // }
+            // if(IslevelFreeze(_add,my_level-1))
+            // {
+            //     return 0;
+            // }
+            
+
+
+        //     uint curr_month= get_curr_month();
+        //     uint total_team = user[_add].total_team;
+        //     (uint[] memory levelcount,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
+        //     uint curr_month_directs = user[_add].month[curr_month].directs;
+        //     uint curr_month_Teams = user[_add].month[curr_month].Teams;
+        //     // uint my_level = get_curr_level(_add);
+        //     uint badge_no=0;
+            
+        //     if(my_level == 12 && total_team >= 20000 && active_members>=16 && curr_month_directs >= 2 && curr_month_Teams>=3500 && levelcount[6]>=15 && levelcount[7]>=5 && levelcount[8]>=2)
+        //     {
+        //         badge_no=6;
+        //     }
+        //     else if(my_level >= 10 && total_team >= 10000 && active_members>=13 && curr_month_directs >= 2 && curr_month_Teams>=2000 && levelcount[5]>=15 && levelcount[6]>=5 && levelcount[7]>=2)
+        //     {
+        //         badge_no=5;
+        //     }            
+        //     else if(my_level >= 8 && total_team >= 4500 && active_members>=10 && curr_month_directs >= 2 && curr_month_Teams>=800 && levelcount[4]>=15 && levelcount[5]>=5 && levelcount[6]>=2)
+        //     {
+        //         badge_no=4;
+        //     }            
+        //     else if(my_level >= 7 && total_team >= 1500 && active_members>=7 && curr_month_directs >= 2 && curr_month_Teams>=450 && levelcount[3]>=15 && levelcount[4]>=5 && levelcount[5]>=2)
+        //     {
+        //         badge_no=3;
+        //     }            
+        //     else if(my_level >= 5 && total_team >= 500 && active_members>=4 && curr_month_directs >= 2 && curr_month_Teams>=100 && levelcount[1]>=15 && levelcount[2]>=5 && levelcount[3]>=2)
+        //     {
+        //         badge_no=2;
+        //     }    
+        
+        //     else if(my_level >= 4 && total_team >= 100 && active_members>=2 && curr_month_directs >= 2 && curr_month_Teams>=30 && levelcount[1]>=5 && levelcount[2]>=2)
+        //     {
+        //         badge_no=1;
+        //     }
+
+        //     return badge_no;
+
+        // }
+
+
         function currMonth_badge(address _add) public view returns(uint )
         {
 
             uint my_level = get_curr_level(_add);
-            
+            if(my_level==0)
+            {
+                return 0;
+
+            }
             if(IslevelFreeze(_add,my_level-1))
             {
                 return 0;
             }
 
-            uint curr_month= get_curr_month();
+            // uint curr_month= get_curr_month();
             uint total_team = user[_add].total_team;
-            (uint[] memory levelcount,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
-            uint curr_month_directs = user[_add].month[curr_month].directs;
-            uint curr_month_Teams = user[_add].month[curr_month].Teams;
+            (,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
+            // uint curr_month_directs = user[_add].month[curr_month].directs;
+            // uint curr_month_Teams = user[_add].month[curr_month].Teams;
             // uint my_level = get_curr_level(_add);
             uint badge_no=0;
             
-            if(my_level == 12 && total_team >= 20000 && active_members>=16 && curr_month_directs >= 2 && curr_month_Teams>=3500 && levelcount[6]>=15 && levelcount[7]>=5 && levelcount[8]>=2)
+            if(my_level >= 7 && total_team >= 15 && active_members>=6 )
             {
                 badge_no=6;
             }
-            else if(my_level >= 10 && total_team >= 10000 && active_members>=13 && curr_month_directs >= 2 && curr_month_Teams>=2000 && levelcount[5]>=15 && levelcount[6]>=5 && levelcount[7]>=2)
+            else if(my_level >= 6 && total_team >= 14 && active_members>=5 )
             {
                 badge_no=5;
             }            
-            else if(my_level >= 8 && total_team >= 4500 && active_members>=10 && curr_month_directs >= 2 && curr_month_Teams>=800 && levelcount[4]>=15 && levelcount[5]>=5 && levelcount[6]>=2)
+            else if(my_level >= 5 && total_team >= 13 && active_members>=4 )
             {
                 badge_no=4;
             }            
-            else if(my_level >= 7 && total_team >= 1500 && active_members>=7 && curr_month_directs >= 2 && curr_month_Teams>=450 && levelcount[3]>=15 && levelcount[4]>=5 && levelcount[5]>=2)
+            else if(my_level >= 4 && total_team >= 12 && active_members>=3 )
             {
                 badge_no=3;
             }            
-            else if(my_level >= 5 && total_team >= 500 && active_members>=4 && curr_month_directs >= 2 && curr_month_Teams>=100 && levelcount[1]>=15 && levelcount[2]>=5 && levelcount[3]>=2)
+            else if(my_level >= 3 && total_team >= 11 && active_members>=2 )
             {
                 badge_no=2;
             }    
         
-            else if(my_level == 4 && total_team >= 100 && active_members>=2 && curr_month_directs >= 2 && curr_month_Teams>=30 && levelcount[1]>=5 && levelcount[2]>=2)
+            else if(my_level >= 2 && total_team >= 10 && active_members>=1 )
             {
                 badge_no=1;
             }
