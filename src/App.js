@@ -228,10 +228,13 @@ function App() {
       {
          Polbalance  =await  web3.eth.getBalance(address)
          USDTBalance = await USDT_contract.methods.balanceOf(address).call(); 
-      
+
          user = await contract.methods.user(address).call();      
+
          let isActiveMember = await contract.methods.check_active_member(address).call();
+          
          let currMonth_badge = await contract.methods.currMonth_badge(address).call();
+
          let Monthly_salary = await contract.methods.get_Monthly_salary(address).call();
          let GiftReward = await contract.methods.get_Monthly_GiftReward(address).call();
 
@@ -240,7 +243,6 @@ function App() {
          let curr_month = await contract.methods.get_curr_month(address).call();
          let regFee = await contract.methods.regFee().call();
          let totalusers = 0;
-
          let upliner_data = await contract.methods.user(user[2]).call();
          let total_directs = await contract.methods.get_totalDirects(address).call();
          let launch_date = await contract.methods.launch_date().call();

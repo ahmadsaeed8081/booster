@@ -129,7 +129,7 @@ contract booster is Proxiable
             user[msg.sender].registration_time=block.timestamp;
             usdt_address= 0x341343568948459e5b7017eDDb05110cfA3EF699;
             launch_date=block.timestamp;
-            time_divider=60 minutes;
+            time_divider = 60 minutes;
             regFee=0.001 ether;
             for(uint i=0;i<12;i++)
             {
@@ -141,9 +141,6 @@ contract booster is Proxiable
             admins.push(0xd96aA39DE8DD0858F0764A62ecd86faf8988ab81);
             admins.push(0xbd523407784420B3c66630AD6Cdb553369a65697);
             admins.push(0x73167BE4d0cF2489A246249BF901f5939E82208e);
-
-
-
 
         }
 
@@ -189,9 +186,9 @@ contract booster is Proxiable
             {
                 user[user[msg.sender].upliner].month[get_curr_month()].directs++;
                 user[user[msg.sender].upliner].AllDirects.push(msg.sender);
+
                 if( user[user[msg.sender].upliner].month[get_curr_month()].directs>=5)
                 {
-
                     user[user[msg.sender].upliner].month[get_curr_month()].eligibleForGift=true;
                     eachMonth_TotalgiftRewUsers[get_curr_month()]++;
                 }
@@ -215,26 +212,31 @@ contract booster is Proxiable
                 {
                     if(user[temp].Level[level_no].joined)
                     {
+
+                        if(level_no==0)
+                        {
+                            user[temp].month[get_curr_month()].Teams++;
+                            user[temp].total_team++;
+                        }
+
                         arr[0] = check_active_member(temp);
                         total_earned = get_level_totalEarned(temp, level_count);
-                    
+
                         if(arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
                         {
 
                             if(!arr[1] && user[temp].Level[1].joined)
                             {
                                 uint Rew = level_monthly_rew[level_no] * level_percentage[level_count]/100;
-                                distributions( temp,level_count,total_earned,Rew,0);
+                                distributions( temp,level_no,total_earned,Rew,0);
                                 remaining_amount-=Rew;
                                 level_count++;
 
-
-
-                                if(level_no==0)
+                                if(level_count>=25)
                                 {
-                                    user[temp].month[get_curr_month()].Teams++;
-                                    user[temp].total_team++;
+                                    arr[1]=true;
                                 }
+
 
                                 uint temp_badge = currMonth_badge(temp);
 
@@ -408,7 +410,7 @@ contract booster is Proxiable
             
             if(remaining_amount>0)
             {
-                Token(usdt_address).transferFrom(msg.sender,address(this),remaining_amount);
+                admin_FundDistributions(remaining_amount, 0);
             }
             
             updateHistory(1);
@@ -532,15 +534,22 @@ contract booster is Proxiable
 
         function currMonth_badge(address _add) public view returns(uint )
         {
-            uint curr_month= get_curr_month();
 
+            uint my_level = get_curr_level(_add);
+            
+            if(IslevelFreeze(_add,my_level))
+            {
+                return 0;
+            }
+
+            uint curr_month= get_curr_month();
             uint total_team = user[_add].total_team;
             (uint[] memory levelcount,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
             uint curr_month_directs = user[_add].month[curr_month].directs;
             uint curr_month_Teams = user[_add].month[curr_month].Teams;
-            uint my_level = get_curr_level(_add);
+            // uint my_level = get_curr_level(_add);
             uint badge_no=0;
-
+            
             if(my_level == 12 && total_team >= 20000 && active_members>=16 && curr_month_directs >= 2 && curr_month_Teams>=3500 && levelcount[6]>=15 && levelcount[7]>=5 && levelcount[8]>=2)
             {
                 badge_no=6;
@@ -647,7 +656,7 @@ contract booster is Proxiable
             address[] memory direct_members = user[_add].AllDirects;
             uint next_member_count;
 
-            for(uint j=0; j < 25;j++) //levels
+            for(uint j=0; j < 12;j++) //levels
             {
 
                 for( uint k = 0;k < direct_members.length;k++) //members
@@ -802,15 +811,12 @@ contract booster is Proxiable
 
         function get_All_TotalEarnings(address add) external view returns( uint level25_Earning,uint b5_Earning,uint b10_Earning,uint totalEarned)
         {
-            for(uint i=0;i<25;i++)
+            for(uint i=0;i<12;i++)
             {
                 level25_Earning+=user[add].Level[i].level_earning;
-                if(i<12)
-                {
-                    b5_Earning+=user[add].Level[i].b5_earning;
-                    b10_Earning+=user[add].Level[i].b10_earning;
-                }
-
+                b5_Earning+=user[add].Level[i].b5_earning;
+                b10_Earning+=user[add].Level[i].b10_earning;
+                
             }
 
             totalEarned+=level25_Earning+b5_Earning+b10_Earning + (get_Monthly_salary(add)+  user[add].total_salary_withdraw)  + (get_Monthly_GiftReward(add) + user[add].total_giftRew_withdraw) ;
@@ -829,7 +835,7 @@ contract booster is Proxiable
                 b10_Earning+=user[add].Level[level_no].b10_earning;
             }
 
-            totalEarned+= (level_no > 0 && user[add].Level[level_no].joined  ? income_restriction[level_no-1] : 0)  + level25_Earning+b5_Earning+b10_Earning + (get_Monthly_salary(add)+  user[add].total_salary_withdraw) ;
+            totalEarned+= (level_no > 0 && user[add].Level[level_no].joined  ? income_restriction[level_no-1] : 0)  + level25_Earning+b5_Earning+b10_Earning ;
         }
         
 
@@ -844,6 +850,15 @@ contract booster is Proxiable
         {
             return user[add].AllDirects.length;
         }
+        
+        function IslevelFreeze(address add,uint level_no) view public returns(bool)
+        { 
+            if((get_level_totalEarned(add,level_no) >= income_restriction[level_no]) && !user[add].Level[level_no+1].joined){
+                return true;
+            }
+            return false;
+        }
+        
         
         
         function get_currTime_And_historyLength() external view returns(uint temp,uint historylength)

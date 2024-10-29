@@ -1,6 +1,6 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0xf7c233a0Fc85E32C7E6188E4CD7a12d4F5a45Bc4";
+export const cont_address="0x5FD0e77776e4F7E2d9417C16fbcAcaD786fDF83F";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
@@ -511,6 +511,30 @@ export const cont_abi=[
 				"internalType": "uint256",
 				"name": "userID",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "add",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "level_no",
+				"type": "uint256"
+			}
+		],
+		"name": "IslevelFreeze",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
