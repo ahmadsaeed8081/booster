@@ -252,7 +252,7 @@ async function GiftRew1() {
       const tx = await writeContractAsync({
         abi: cont_abi,
         address: cont_address,
-        functionName: "withdraw_Monthly_salary", 
+        functionName: "withdraw_GiftRew", 
 
       });
       set_count(1)
