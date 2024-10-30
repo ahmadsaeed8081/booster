@@ -1,6 +1,6 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0x43670396C4dC791756E5f4397EabB82536fB6147";
+export const cont_address="0x326E83e7d855fb9a12C6689857AA258e4A1d9CA9";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
