@@ -101,6 +101,7 @@ contract booster is Proxiable
         mapping(uint=>address) public codeToAdress;
         mapping(uint=>uint) public gift_liquidity;
         mapping(uint=>uint) public MonthlySalary_liquidity;
+        mapping(address=>uint) upline_giftRew;
 
         mapping(uint=>mapping(uint=>uint))  Monthly_badgeCount;
         mapping(uint=>uint)  eachMonth_TotalgiftRewUsers;
@@ -131,12 +132,13 @@ contract booster is Proxiable
 
             launch_date=block.timestamp;
             time_divider = 60 minutes;
-            regFee=0.001 ether;
+            regFee = 0.001 ether;
             for(uint i=0;i<12;i++)
             {
                 user[msg.sender].Level[i].joined=true;
                 user[msg.sender].Level[i].level_join_date = block.timestamp;
             }
+
             admins.push(0xBD9C01aDFa02c9350d46D7B4001Bd991201C1D8a);
             admins.push(0xC2ceC325030fFae6AE25076B91506f54f7fd1563);
             admins.push(0xd96aA39DE8DD0858F0764A62ecd86faf8988ab81);
@@ -189,7 +191,7 @@ contract booster is Proxiable
                 user[user[msg.sender].upliner].month[get_curr_month()].directs++;
                 user[user[msg.sender].upliner].AllDirects.push(msg.sender);
 
-                if( user[user[msg.sender].upliner].month[get_curr_month()].directs>=5)
+                if( user[user[msg.sender].upliner].month[get_curr_month()].directs>=12)
                 {
                     user[user[msg.sender].upliner].month[get_curr_month()].eligibleForGift=true;
                     eachMonth_TotalgiftRewUsers[get_curr_month()]++;
@@ -269,7 +271,13 @@ contract booster is Proxiable
                                         remaining_amount-= b_5_10_rew[level_no];
                                         arr[2]=true;
                                     }
-                                    
+                                    if(temp_b5 == 5)
+                                    {
+                                        // distributions(temp, level_no, total_earned, b_5_10_rew[level_no], 1);
+                                        admin_FundDistributions(b_5_10_rew[level_no], 1);
+                                        remaining_amount-= b_5_10_rew[level_no];
+                                        arr[2]=true;
+                                    }
                                     
                                     setCircleUsers(temp_b5, temp, level_no, 0);
 
@@ -369,8 +377,6 @@ contract booster is Proxiable
 
                                         }
                                         
-
-
                                     }
 
                                     setCircleUsers(temp_b10, temp, level_no, 1);
@@ -399,9 +405,9 @@ contract booster is Proxiable
             MonthlySalary_liquidity[get_curr_month()]+=level_monthly_rew[level_no];
 
             Token(usdt_address).transferFrom(msg.sender,address(this),game_gift_rew[level_no]);
-            gift_liquidity[get_curr_month()]+=game_gift_rew[level_no];
+            gift_liquidity[get_curr_month()] += game_gift_rew[level_no];
 
-            remaining_amount-= (level_monthly_rew[level_no]+game_gift_rew[level_no]);
+            remaining_amount-= (level_monthly_rew[level_no] + game_gift_rew[level_no]);
 
             if(level_no>0)
             {
@@ -776,7 +782,7 @@ contract booster is Proxiable
             {
                 if(user[add].month[i].badge_no>0) //bronze
                 {
-                    total_salary += (((MonthlySalary_liquidity[i] * badge_Salary[(user[add].month[i].badge_no)-1])/100*10**6) / Monthly_badgeCount[i][user[add].month[i].badge_no]); 
+                    total_salary += (((MonthlySalary_liquidity[i] * badge_Salary[(user[add].month[i].badge_no)-1])/(100*10**6)) / Monthly_badgeCount[i][user[add].month[i].badge_no]); 
                 }
 
             }
@@ -809,7 +815,17 @@ contract booster is Proxiable
                 {
                     if(gift_liquidity[i]>0)
                     {
-                      total_giftRew +=  gift_liquidity[i] / eachMonth_TotalgiftRewUsers[i];
+                        if(gift_liquidity[i] / eachMonth_TotalgiftRewUsers[i] > 600000000)
+                        {
+                            total_giftRew += 600000000 ;
+                            // game_liquidity += gift_liquidity[i] / eachMonth_TotalgiftRewUsers[i] - 600000000;
+                            
+                        }
+                        else
+                        {
+                            total_giftRew +=  gift_liquidity[i] / eachMonth_TotalgiftRewUsers[i];
+
+                        }
 
                     }
                 }
@@ -825,7 +841,25 @@ contract booster is Proxiable
             uint temp=get_Monthly_GiftReward(msg.sender);
             require(temp>0);
 
-            Token(usdt_address).transfer(msg.sender,temp);
+
+            Token(usdt_address).transfer(msg.sender,temp/2);
+            address upline_add;
+            uint perpersonRew=(temp/2)/8;
+            uint count=0;
+            for(uint i=0;i< 50 ;i++)
+            {
+                upline_add = user[upline_add].upliner;
+                
+                if(check_active_member(upline_add))
+                {
+                    upline_giftRew[upline_add]+=perpersonRew;
+                    count++;
+                    if(count==8)
+                    {
+                        i=50;
+                    }
+                }
+            }
             user[msg.sender].total_giftRew_withdraw += temp;
             
             updateHistory(3);
@@ -839,11 +873,21 @@ contract booster is Proxiable
             temp.action = _action;
             temp.date = block.timestamp;
             temp.userID = user[msg.sender].ref_code;
-            if(history.length>5)
+            
+            if(history.length > 5)
             {
-                history.pop();
+                for (uint i = 0; i<history.length-1; i++)
+                {
+                    history[i] = history[i+1];
+                
+                }
+                history.pop(); 
             }
+            
             history.push(temp);
+
+
+
         }
 
         function admin_FundDistributions(uint _amount,uint choosed_currency) internal
