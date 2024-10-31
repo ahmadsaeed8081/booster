@@ -54,6 +54,10 @@ function App() {
   const [monthlySalary, set_monthlySalary] = useState(0);
   const [badge, set_badge] = useState(0);
   const [levelData, set_levelData] = useState([]);
+  const [recent_data, set_recent_data] = useState([]);
+
+  const [levelFreezeData, set_levelFreezeData] = useState([]);
+
   const [historyData, set_historyData] = useState([]);
 
   const [currLevel, set_currLevel] = useState(0);
@@ -133,6 +137,8 @@ function App() {
     let user;
     let Polbalance;
     let level_data=[];
+    let levelFreeze_data=[];
+
     let history_data=[];
 
     if(isConnected)
@@ -150,8 +156,9 @@ function App() {
        let curr_level = await contract.methods.get_curr_level(search_address).call();
        let curr_month = await contract.methods.get_curr_month(search_address).call();
        let regFee = await contract.methods.regFee().call();
-       let totalusers = 0;
 
+
+       let totalusers = 0;
        let upliner_data = await contract.methods.user(user[2]).call();
        let total_directs = await contract.methods.get_totalDirects(search_address).call();
        let launch_date = await contract.methods.launch_date().call();
@@ -163,6 +170,13 @@ function App() {
        {
         level_data.push( await contract.methods.get_level_data(search_address,i).call())
        }
+       for(let i=0;i<12;i++)
+       {
+        levelFreeze_data.push( await contract.methods.IslevelFreeze( search_address, i).call())
+       }
+
+       console.log(levelFreeze_data)
+
        for(let i=0;i<data.historylength;i++)
        {
         history_data.push( await contract.methods.history(i).call())
@@ -190,9 +204,18 @@ function App() {
 
       set_badge(currMonth_badge)
       set_levelData(level_data)
+      set_levelFreezeData(levelFreeze_data);
       set_historyData(history_data)
       set_currLevel(curr_level)
-      set_isDummyState(true)
+      if(search_address.toLowerCase()==address.toLowerCase())
+      {
+        set_isDummyState(false)
+
+      }
+      else{
+        set_isDummyState(true)
+
+      }
 
       let  temp=Number(launch_date);
       for(let i=0;i<Number(curr_month);i++)
@@ -223,6 +246,7 @@ function App() {
       let Polbalance;
       let level_data=[];
       let history_data=[];
+      let levelFreeze_data=[];
 
       if(isConnected)
       {
@@ -241,6 +265,8 @@ function App() {
          let TotalEarnings= await contract.methods.get_All_TotalEarnings(address).call();
          let curr_level = await contract.methods.get_curr_level(address).call();
          let curr_month = await contract.methods.get_curr_month(address).call();
+         let recent_data = await contract.methods.get_month_data(address).call();
+
          let regFee = await contract.methods.regFee().call();
          let totalusers = 0;
          let upliner_data = await contract.methods.user(user[2]).call();
@@ -254,14 +280,17 @@ function App() {
          {
           level_data.push( await contract.methods.get_level_data(address,i).call())
          }
-
+         for(let i=0;i<12;i++)
+         {
+          levelFreeze_data.push( await contract.methods.IslevelFreeze( address, i).call())
+         }
          for(let i=0;i<data.historylength;i++)
          {
           history_data.push( await contract.methods.history(i).call())
          }
 
          set_user_address(address)
-
+         set_recent_data(recent_data)
          set_myName(myName=="" ? "User_Booster":myName)
          set_total_users(totalusers);
          set_regFee(regFee)
@@ -284,6 +313,8 @@ function App() {
 
         set_badge(currMonth_badge)
         set_levelData(level_data)
+        set_levelFreezeData(levelFreeze_data);
+
         set_historyData(history_data)
 
         set_currLevel(curr_level)
@@ -470,7 +501,7 @@ function App() {
       <Route path='/'  element={<Home  loader={loader}  isRegister={isRegister} />} />
       <Route path='/register'  element={<Register get_data={get_data} loader={loader} regFee={regFee} isRegister={isRegister} />} />
 
-      <Route path='/user-pannel'  element={< UserPannel user_address={user_address} isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
+      <Route path='/user-pannel'  element={< UserPannel recent_data={recent_data} levelFreezeData={levelFreezeData} user_address={user_address} isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
 
       <Route path='/level-details/:id'  element={<LevelDetails search_user={search_user} loader={loader} levelData={levelData} />} />
      </Routes>

@@ -108,8 +108,8 @@ contract booster is Proxiable
 
         address[] admins;
         mapping(address=>bool) Is_PlatinumAddresses;
-
         history_data[] public history;
+        mapping(address=>address) pretemp;
 
 
 
@@ -148,7 +148,6 @@ contract booster is Proxiable
         }
 
         function register(uint ref_code) external payable returns(bool) 
-
         {
             require(msg.value>=regFee);
             address _ref = codeToAdress[ref_code];
@@ -162,7 +161,7 @@ contract booster is Proxiable
             user[msg.sender].registration_time=block.timestamp;
 
             codeToAdress[totalusers]=msg.sender;
-            admin_FundDistributions(msg.value,1);
+            admin_FundDistributions(msg.value,0);
             
             updateHistory(0);
 
@@ -202,7 +201,6 @@ contract booster is Proxiable
 
             address temp = msg.sender;    
             uint level_count=0;
-
             bool[] memory arr=new bool[](4);
 
             // arr[0]= isActive. arr[1]= level_distribution. arr[2]= b5_distribution. arr[3]= b10_distribution
@@ -211,6 +209,7 @@ contract booster is Proxiable
 
             for(uint i=0; (i<100 && !(arr[1] && arr[2] && arr[3])) ;i++)           //25 level Rew distribution
             {
+                pretemp[msg.sender]=temp;
                 temp = user[temp].upliner;    
                 if(temp!=address(0))
                 {
@@ -273,7 +272,6 @@ contract booster is Proxiable
                                     }
                                     if(temp_b5 == 5)
                                     {
-                                        // distributions(temp, level_no, total_earned, b_5_10_rew[level_no], 1);
                                         admin_FundDistributions(b_5_10_rew[level_no], 1);
                                         remaining_amount-= b_5_10_rew[level_no];
                                         arr[2]=true;
@@ -309,7 +307,7 @@ contract booster is Proxiable
                                         {
                                             
                                             total_earned = get_level_totalEarned(user[temp].AllDirects[j],level_no);
-                                            if(check_active_member(user[temp].AllDirects[j]) && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
+                                            if(check_active_member(user[temp].AllDirects[j]) && user[temp].AllDirects[j] != pretemp[msg.sender]   && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
                                             {
                                                 colified_partners[count]=user[temp].AllDirects[j];
                                                 count++;
@@ -349,7 +347,7 @@ contract booster is Proxiable
                                             address temp_Upliner = user[user[temp].upliner].AllDirects[j];
                                             total_earned = get_level_totalEarned(temp_Upliner,level_no);
 
-                                            if(check_active_member(temp_Upliner) && (user[temp_Upliner].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) 
+                                            if(check_active_member(temp_Upliner) && temp!=temp_Upliner && (user[temp_Upliner].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) 
                                             {
                                                 colified_partners[count]=temp_Upliner;
                                                 count++;
@@ -420,7 +418,7 @@ contract booster is Proxiable
             
             if(remaining_amount>0)
             {
-                admin_FundDistributions(remaining_amount, 0);
+                admin_FundDistributions(remaining_amount, 1);
             }
             
             updateHistory(1);
@@ -439,7 +437,7 @@ contract booster is Proxiable
             {
                 admin_rew = (total_earned + rew) - income_restriction[level_count];
                 Token(usdt_address).transferFrom(msg.sender,temp,rew-admin_rew);
-                admin_FundDistributions(admin_rew,0);
+                admin_FundDistributions(admin_rew,1);
 
                 if(_val==0)
                 {
@@ -897,7 +895,7 @@ contract booster is Proxiable
 
             for(uint i=0;i<admins.length;i++)
             {
-                if(choosed_currency==0) //usdt
+                if(choosed_currency==1) //usdt
                 {
                     Token(usdt_address).transferFrom(msg.sender,admins[i],_amount);
                 }

@@ -33,14 +33,11 @@ const UserPannel = (props) => {
   const copyAddress = () => toast("Address is copied!");
 
   // useEffect(() => {
-  //   const unloadCallback1 = (event) => {
-  //     event.preventDefault();
-  //     alert("nkjnkj n jn")
-  //     return "";
-  //   };
-  
-  //   window.addEventListener("beforeunload", unloadCallback1);
-  //   // return () => window.removeEventListener("beforeunload", unloadCallback1);
+
+  //   if(props.levelData)
+  //   {
+  //     alert("bbjkk")
+  //   }
   // }, []);
 
   const Level = [
@@ -49,12 +46,14 @@ const UserPannel = (props) => {
       level: "01",
       price: "6.5",
       isjoined :props.levelData? props.levelData[0].joined:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[0]:false,
     },
     {
       id: 2,
       level: "02",
       price: "18",
       isjoined : props.levelData? props.levelData[1][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[1]:false,
 
     },
     {
@@ -62,6 +61,7 @@ const UserPannel = (props) => {
       level: "03",
       price: "34",
       isjoined : props.levelData? props.levelData[2][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[2]:false,
 
     },
     {
@@ -69,6 +69,7 @@ const UserPannel = (props) => {
       level: "04",
       price: "52",
       isjoined :props.levelData? props.levelData[3][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[3]:false,
 
     },
     {
@@ -76,6 +77,7 @@ const UserPannel = (props) => {
       level: "05",
       price: "86",
       isjoined :props.levelData? props.levelData[4][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[4]:false,
 
     },
     {
@@ -83,6 +85,7 @@ const UserPannel = (props) => {
       level: "06",
       price: "136",
       isjoined :props.levelData? props.levelData[5][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[5]:false,
 
     },
     {
@@ -90,6 +93,7 @@ const UserPannel = (props) => {
       level: "07",
       price: "272",
       isjoined :props.levelData? props.levelData[6][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[6]:false,
 
     },
     {
@@ -97,6 +101,7 @@ const UserPannel = (props) => {
       level: "08",
       price: "544",
       isjoined :props.levelData? props.levelData[7][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[7]:false,
 
     },
     {
@@ -104,6 +109,7 @@ const UserPannel = (props) => {
       level: "09",
       price: "1088",
       isjoined :props.levelData? props.levelData[8][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[8]:false,
 
     },
     {
@@ -111,6 +117,7 @@ const UserPannel = (props) => {
       level: "10",
       price: "2176",
       isjoined :props.levelData? props.levelData[9][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[9]:false,
 
     },
     ,
@@ -119,6 +126,7 @@ const UserPannel = (props) => {
       level: "11",
       price: "4352",
       isjoined :props.levelData? props.levelData[10][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[10]:false,
 
     },
     ,
@@ -127,6 +135,7 @@ const UserPannel = (props) => {
       level: "12",
       price: "8704",
       isjoined :props.levelData? props.levelData[11][0]:false,
+      isFreeze :props.levelFreezeData? props.levelFreezeData[11]:false,
 
     },
   ];
@@ -692,7 +701,8 @@ async function updateName1() {
                               />
                             </sup>
                             <span className=" tw-font-poppins tw-text-[#EACE56] tw-text-sm">
-                              0
+                            {props.recent_data?Number(props.recent_data[0]):0}
+
                             </span>
                           </div>
                         </div>
@@ -721,7 +731,8 @@ async function updateName1() {
                               />
                             </sup>
                             <span className=" tw-font-poppins tw-text-sm tw-text-[#EACE56]">
-                              0
+                            {props.recent_data?Number(props.recent_data[1]):0}
+
                             </span>
                           </div>
                         </div>
@@ -740,13 +751,13 @@ async function updateName1() {
                         </p>
                       </div>
 
-                      <div className=" tw-flex tw-items-center tw-pt-2 tw-gap-4">
+                      {/* <div className=" tw-flex tw-items-center tw-pt-2 tw-gap-4">
                         <div>
                           <h6 className=" tw-text-white tw-text-lg tw-font-poppins tw-pt-2">
                             ${Number(props.totalEarning)/10**6}
                           </h6>
                         </div>
-                        {/* <div className=" tw-flex tw-items-start">
+                        <div className=" tw-flex tw-items-start">
                           <sup>
                             <img
                               src={require("../../assets/images/watch.png")}
@@ -755,10 +766,10 @@ async function updateName1() {
                             />
                           </sup>
                           <span className=" tw-font-poppins tw-pt-1 tw-text-[#EACE56]  tw-text-lg">
-                            $345
+                            {props.recent_data[0]}
                           </span>
-                        </div> */}
-                      </div>
+                        </div>
+                      </div> */}
                     </div>
 
                     <div>
@@ -968,7 +979,17 @@ async function updateName1() {
                         <h6 className=" tw-text-white tw-text-sm tw-font-poppins">
                           Level {item?.level}
                         </h6>
-
+                        {item.isFreeze ?
+                          (
+                            <div>
+                            <img
+                              src={require("../../assets/images/dollar-block.png")}
+                              alt=""
+                              className=" tw-w-10 tw-h-10"
+                            />
+                          </div>
+  
+                          ):(null)}
 
                         <div className=" tw-flex tw-gap-2 tw-items-center">
                           <h6 className=" tw-text-white tw-text-sm tw-font-poppins">
@@ -1001,11 +1022,13 @@ async function updateName1() {
                           </div>
   
                           ):(null)}
+
   
                           <div className=" tw-flex tw-gap-2 tw-items-center">
                             <h6 className=" tw-text-white tw-text-sm tw-font-poppins">
                              ${item?.price}
                             </h6>
+                            
                             <img
                               src={require("../../assets/images/crypto.png")}
                               alt=""

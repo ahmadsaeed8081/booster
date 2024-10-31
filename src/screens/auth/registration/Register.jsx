@@ -311,7 +311,7 @@ const teamMembers = [
   },
   {
     name: "Game Earning",
-    role: "NFT Marketplace (coming soon) - gives you the opportunity to buy or sell your NFTs.",
+    role: "With Booster.coach, earning rewards is as easy as playing games! Enjoy exciting gameplay and unlock opportunities to win real rewards.    ",
     image: require("../../../assets/images/material-symbols_admin-panel-settings-rounded.png"),
   },
 ];

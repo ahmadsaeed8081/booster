@@ -1,6 +1,6 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0x326E83e7d855fb9a12C6689857AA258e4A1d9CA9";
+export const cont_address="0x4F40Fb3D526Cfd313859335FE00ACdb22aA74B45";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
@@ -125,6 +125,19 @@ export const cont_abi=[
 				"type": "bool"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdrawFunds",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -395,6 +408,47 @@ export const cont_abi=[
 				"type": "address"
 			}
 		],
+		"name": "get_month_data",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "directs",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "Teams",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "badge_no",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "eligibleForGift",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct booster.monthly_data",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "add",
+				"type": "address"
+			}
+		],
 		"name": "get_Monthly_GiftReward",
 		"outputs": [
 			{
@@ -416,30 +470,6 @@ export const cont_abi=[
 		],
 		"name": "get_Monthly_salary",
 		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_add",
-				"type": "address"
-			}
-		],
-		"name": "get_team_currMonth_levels_And_activeMembes",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			},
 			{
 				"internalType": "uint256",
 				"name": "",
