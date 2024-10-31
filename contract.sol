@@ -5,8 +5,7 @@ pragma solidity ^0.8.20;
 interface Token {
     function transfer(address to, uint tokens) external returns (bool success);
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool) ;
-    function balanceOf(address account) external view returns (uint256);
-    function allowance(address owner, address spender) external view returns (uint256);
+
 
     }
     contract Proxiable {
@@ -27,10 +26,7 @@ interface Token {
 } 
 contract booster is Proxiable
     {
-        
-        //testing
-        //last 24h earning
-
+    
         struct level_data{
 
             bool joined;
@@ -102,14 +98,12 @@ contract booster is Proxiable
         mapping(uint=>uint) public gift_liquidity;
         mapping(uint=>uint) public MonthlySalary_liquidity;
         mapping(address=>uint) upline_giftRew;
-
-        mapping(uint=>mapping(uint=>uint))  Monthly_badgeCount;
+        mapping(uint=>mapping(uint=>uint)) Monthly_badgeCount;
         mapping(uint=>uint)  eachMonth_TotalgiftRewUsers;
 
         address[] admins;
         mapping(address=>bool) Is_PlatinumAddresses;
         history_data[] public history;
-        mapping(address=>address) pretemp;
 
 
 
@@ -124,10 +118,10 @@ contract booster is Proxiable
         constructor()
         {
             owner=msg.sender;
-            user[msg.sender].isRegister=true;
-            user[msg.sender].ref_code=totalusers;
-            codeToAdress[totalusers]=msg.sender;
-            user[msg.sender].registration_time=block.timestamp;
+            user[owner].isRegister=true;
+            user[owner].ref_code=totalusers;
+            codeToAdress[totalusers]=owner;
+            user[owner].registration_time=block.timestamp;
             usdt_address= 0x341343568948459e5b7017eDDb05110cfA3EF699;
 
             launch_date=block.timestamp;
@@ -135,8 +129,8 @@ contract booster is Proxiable
             regFee = 0.001 ether;
             for(uint i=0;i<12;i++)
             {
-                user[msg.sender].Level[i].joined=true;
-                user[msg.sender].Level[i].level_join_date = block.timestamp;
+                user[owner].Level[i].joined=true;
+                user[owner].Level[i].level_join_date = block.timestamp;
             }
 
             admins.push(0xBD9C01aDFa02c9350d46D7B4001Bd991201C1D8a);
@@ -145,23 +139,43 @@ contract booster is Proxiable
             admins.push(0xbd523407784420B3c66630AD6Cdb553369a65697);
             admins.push(0x73167BE4d0cF2489A246249BF901f5939E82208e);
 
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+
+            
+
         }
 
-        function register(uint ref_code) external payable returns(bool) 
+        function register(address user_add , uint ref_code) external payable returns(bool) 
         {
-            require(msg.value>=regFee);
+            if(owner!=msg.sender)
+            {
+                require(msg.value>=regFee);
+                admin_FundDistributions(msg.value,0);
+            }
+
             address _ref = codeToAdress[ref_code];
-            require(!user[msg.sender].isRegister);
+            require(!user[user_add].isRegister);
             require(user[_ref].isRegister);
 
             totalusers++;         
-            user[msg.sender].upliner=_ref;
-            user[msg.sender].isRegister=true;
-            user[msg.sender].ref_code=totalusers;
-            user[msg.sender].registration_time=block.timestamp;
-
-            codeToAdress[totalusers]=msg.sender;
-            admin_FundDistributions(msg.value,0);
+            user[user_add].upliner=_ref;
+            user[user_add].isRegister=true;
+            user[user_add].ref_code=totalusers;
+            user[user_add].registration_time=block.timestamp;
+            codeToAdress[totalusers]=user_add;
             
             updateHistory(0);
 
@@ -171,45 +185,44 @@ contract booster is Proxiable
 
         
         
-        function unlock_level(uint level_no) external
+        function unlock_level(address user_add,uint level_no) external
         {
-            require(user[msg.sender].isRegister);
-            require(!user[msg.sender].Level[level_no].joined);
+            require(user[user_add].isRegister);
+            require(!user[user_add].Level[level_no].joined);
 
             if(level_no>0)
             {
-                require(user[msg.sender].Level[level_no-1].joined);
+                require(user[user_add].Level[level_no-1].joined);
             }
             
             uint remaining_amount = level_fee[level_no];
-            user[msg.sender].Level[level_no].joined=true;
-            user[msg.sender].Level[level_no].level_join_date = block.timestamp;
+            user[user_add].Level[level_no].joined=true;
+            user[user_add].Level[level_no].level_join_date = block.timestamp;
 
             if(level_no==0)
             {
-                user[user[msg.sender].upliner].month[get_curr_month()].directs++;
-                user[user[msg.sender].upliner].AllDirects.push(msg.sender);
+                user[user[user_add].upliner].month[get_curr_month()].directs++;
+                user[user[user_add].upliner].AllDirects.push(user_add);
 
-                if( user[user[msg.sender].upliner].month[get_curr_month()].directs>=12)
+                if( user[user[user_add].upliner].month[get_curr_month()].directs>=12)
                 {
-                    user[user[msg.sender].upliner].month[get_curr_month()].eligibleForGift=true;
+                    user[user[user_add].upliner].month[get_curr_month()].eligibleForGift=true;
                     eachMonth_TotalgiftRewUsers[get_curr_month()]++;
                 }
 
 
             }
 
-            address temp = msg.sender;    
+            address temp = user_add;    
             uint level_count=0;
             bool[] memory arr=new bool[](4);
+            address pre_user;
 
             // arr[0]= isActive. arr[1]= level_distribution. arr[2]= b5_distribution. arr[3]= b10_distribution
 
-            uint total_earned;
-
-            for(uint i=0; (i<100 && !(arr[1] && arr[2] && arr[3])) ;i++)           //25 level Rew distribution
+            for(uint i=0; (i<100 && !(arr[1] && arr[2] && arr[3])) ;i++)       
             {
-                pretemp[msg.sender]=temp;
+                pre_user=temp;
                 temp = user[temp].upliner;    
                 if(temp!=address(0))
                 {
@@ -223,15 +236,13 @@ contract booster is Proxiable
                         }
 
                         arr[0] = check_active_member(temp);
-                        total_earned = get_level_totalEarned(temp, level_no);
 
-                        if(arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
+                        if(msg.sender!=owner && arr[0] && !IslevelFreeze( temp, level_no) )
                         {
-
                             if(!arr[1] && user[temp].Level[1].joined)
                             {
                                 uint Rew = level_monthly_rew[level_no] * level_percentage[level_count]/100;
-                                distributions( temp,level_no,total_earned,Rew,0);
+                                distributions( temp,level_no,get_level_totalEarned(temp, level_no),Rew,0);
                                 remaining_amount-=Rew;
                                 level_count++;
 
@@ -243,7 +254,7 @@ contract booster is Proxiable
 
                                 uint temp_badge = currMonth_badge(temp);
 
-                                if(user[temp].month[get_curr_month()].badge_no != temp_badge)
+                                if(user[temp].month[get_curr_month()].badge_no != temp_badge && !Is_PlatinumAddresses[temp])
                                 {
                                     user[temp].month[get_curr_month()].badge_no = temp_badge;
                                     Monthly_badgeCount[get_curr_month()][temp_badge]++;
@@ -253,20 +264,18 @@ contract booster is Proxiable
                             }
 
 
-                            total_earned = get_level_totalEarned(temp, level_no);
                             
-                            if(arr[0] && (user[temp].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) 
+                            if(arr[0] && !IslevelFreeze( temp, level_no)) 
                             {
                                 if(!arr[2])
                                 {
                                     
                                     uint temp_b5 = user[temp].Level[level_no].b5_count_for_cycle+1;
                             
-                                    total_earned = get_level_totalEarned(temp,level_no);
 
                                     if(temp_b5 == 3 || temp_b5 == 4)
                                     {
-                                        distributions(temp, level_no, total_earned, b_5_10_rew[level_no], 1);
+                                        distributions(temp, level_no, get_level_totalEarned(temp, level_no), b_5_10_rew[level_no], 1);
                                         remaining_amount-= b_5_10_rew[level_no];
                                         arr[2]=true;
                                     }
@@ -285,103 +294,87 @@ contract booster is Proxiable
 
                                 if(!arr[3])
                                 {
-                                    uint temp_b10 = user[temp].Level[level_no].b10_count_for_cycle+1;
-
-                                    if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
+                                    bool exec;
+                                    while(!exec)
                                     {
+                                        uint temp_b10 = user[temp].Level[level_no].b10_count_for_cycle+1;
+                                        setCircleUsers(temp_b10, temp, level_no, 1);
 
-                                        distributions(temp, level_no, total_earned, b_5_10_rew[level_no],2);
-                                        remaining_amount-= b_5_10_rew[level_no];
-                                        arr[3]=true;
-
-                                    }
-                                    else if(temp_b10 == 4 || temp_b10 == 9)
-                                    {
-
-                                    
-                                        // one of direct partner
-                                        uint count;
-                                        address[] memory colified_partners=new address[](user[temp].AllDirects.length);
-
-                                        for(uint j =0;j<user[temp].AllDirects.length;j++)
+                                        if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
                                         {
-                                            
-                                            total_earned = get_level_totalEarned(user[temp].AllDirects[j],level_no);
-                                            if(check_active_member(user[temp].AllDirects[j]) && user[temp].AllDirects[j] != pretemp[msg.sender]   && (user[user[temp].AllDirects[j]].Level[level_no+1].joined || total_earned < income_restriction[level_no] ))
-                                            {
-                                                colified_partners[count]=user[temp].AllDirects[j];
-                                                count++;
 
-                                            }
+                                            distributions(temp, level_no, get_level_totalEarned(temp, level_no), b_5_10_rew[level_no],2);
+                                            remaining_amount-= b_5_10_rew[level_no];
+
+                                            arr[3]=true;
+                                            exec=true;
 
                                         }
-                                        if(count>0)
+                                        else if(temp_b10 == 4 || temp_b10 == 9)
                                         {
-                                            uint rand_no = randomNo(count);
-                                            temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
-                                            
-                                            if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
-                                            {
-                                                distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
-                                                remaining_amount-= b_5_10_rew[level_no];
+                                            // one of direct partner
+                                            uint count;
+                                            address[] memory colified_partners=new address[](user[temp].AllDirects.length);
 
-                                                arr[3]=true;
+                                            for(uint j =0;j<user[temp].AllDirects.length;j++)
+                                            {
+                                                
+                                                if(check_active_member(user[temp].AllDirects[j])  &&  user[temp].AllDirects[j] != pre_user   && !IslevelFreeze( user[temp].AllDirects[j], level_no) )
+                                                {
+                                                    colified_partners[count]=user[temp].AllDirects[j];
+                                                    count++;
+
+                                                }
 
                                             }
-                                            setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
-
-
-
-                                        }
-
-
-                                    }
-                                    else if(temp_b10 == 3 || temp_b10 == 8)
-                                    {
-
-                                        uint count;
-                                        address[] memory colified_partners=new address[](user[user[temp].upliner].AllDirects.length);
-
-                                        for(uint j =0;j<user[user[temp].upliner].AllDirects.length;j++)
-                                        {
-                                            address temp_Upliner = user[user[temp].upliner].AllDirects[j];
-                                            total_earned = get_level_totalEarned(temp_Upliner,level_no);
-
-                                            if(check_active_member(temp_Upliner) && temp!=temp_Upliner && (user[temp_Upliner].Level[level_no+1].joined || total_earned < income_restriction[level_no] )) 
+                                            if(count>0)
                                             {
-                                                colified_partners[count]=temp_Upliner;
-                                                count++;
-                                            }
-
-                                        }
-                                        if(count>0)
-                                        {
-                                            uint rand_no = randomNo(count);
-
-                                            temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
-                                            
-                                            if(temp_b10 == 1 || temp_b10 == 2 || temp_b10 == 5 || temp_b10 == 6 || temp_b10 == 7 || temp_b10 == 10)
-                                            {
-                                                distributions(colified_partners[rand_no], level_no, get_level_totalEarned(colified_partners[rand_no],level_no), b_5_10_rew[level_no],2);
-                                                remaining_amount-= b_5_10_rew[level_no];
-
-                                                arr[3]=true;
+                                                uint rand_no = randomNo(count);
+                                                temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
+                                                temp=colified_partners[rand_no];
 
                                             }
-                                            
-                                            setCircleUsers(temp_b10, colified_partners[rand_no], level_no, 1);
-
+                                            else{
+                                                exec=true;
+                                            }
 
 
                                         }
+                                        else if(temp_b10 == 3 || temp_b10 == 8)
+                                        {
+                                            uint count;
+                                            address[] memory colified_partners=new address[](user[user[temp].upliner].AllDirects.length);
+                                            for(uint j =0;j<user[user[temp].upliner].AllDirects.length;j++)
+                                            {
+                                                address temp_Upliner = user[user[temp].upliner].AllDirects[j];
+                                                if(check_active_member(temp_Upliner) && temp!=temp_Upliner && !IslevelFreeze(temp_Upliner, level_no)) 
+                                                {
+                                                    colified_partners[count]=temp_Upliner;
+                                                    count++;
+                                                }
+
+                                            }
+                                            if(count>0)
+                                            {
+                                                uint rand_no = randomNo(count);
+                                                temp_b10 = user[colified_partners[rand_no]].Level[level_no].b10_count_for_cycle+1;
+                                                temp=colified_partners[rand_no];
+
+                                            }
+                                            else{
+                                                exec=true;
+                                            }
+                                            
+                                            
+                                            
+                                        }
+
                                         
                                     }
 
-                                    setCircleUsers(temp_b10, temp, level_no, 1);
-
                                 }
 
-
+                                temp=user[pre_user].upliner;
                             }
 
                             
@@ -397,35 +390,35 @@ contract booster is Proxiable
                 }
 
             }
+            
+        
+            if(msg.sender!=owner)
+            {
+                Token(usdt_address).transferFrom(user_add,address(this),level_monthly_rew[level_no]);
+                MonthlySalary_liquidity[get_curr_month()]+=level_monthly_rew[level_no];
+
+                Token(usdt_address).transferFrom(user_add,address(this),game_gift_rew[level_no]);
+                gift_liquidity[get_curr_month()] += game_gift_rew[level_no];
+
+                remaining_amount-= (level_monthly_rew[level_no] + game_gift_rew[level_no]);
+
+                if(level_no>0)
+                {
+
+                    Token(usdt_address).transferFrom(user_add,address(this),game_gift_rew[level_no]);
+                    game_liquidity += game_gift_rew[level_no];
+                    remaining_amount-= game_gift_rew[level_no];
+
+                }
                 
-
-            Token(usdt_address).transferFrom(msg.sender,address(this),level_monthly_rew[level_no]);
-            MonthlySalary_liquidity[get_curr_month()]+=level_monthly_rew[level_no];
-
-            Token(usdt_address).transferFrom(msg.sender,address(this),game_gift_rew[level_no]);
-            gift_liquidity[get_curr_month()] += game_gift_rew[level_no];
-
-            remaining_amount-= (level_monthly_rew[level_no] + game_gift_rew[level_no]);
-
-            if(level_no>0)
-            {
-
-                Token(usdt_address).transferFrom(msg.sender,address(this),game_gift_rew[level_no]);
-                game_liquidity += game_gift_rew[level_no];
-                remaining_amount-= game_gift_rew[level_no];
+                if(remaining_amount>0)
+                {
+                    admin_FundDistributions(remaining_amount, 1);
+                }
 
             }
-            
-            if(remaining_amount>0)
-            {
-                admin_FundDistributions(remaining_amount, 1);
-            }
-            
+                
             updateHistory(1);
-
-                
-            // return true;
-
          
         }
 
@@ -527,6 +520,11 @@ contract booster is Proxiable
 
         function check_active_member(address add) public view returns(bool)
         {
+            if(Is_PlatinumAddresses[add])
+            {
+                return true;
+            }
+
             if((get_Last30Days_directs(add) > 0  &&  get_Last60Days_l2_Upgrade(add) > 0 ) || get_user_month(add) < 2) //check active member
             {
                 return true;
@@ -597,7 +595,10 @@ contract booster is Proxiable
 
         function currMonth_badge(address _add) public view returns(uint )
         {
-
+            if(Is_PlatinumAddresses[_add])
+            {
+                return 6;
+            }
             uint my_level = get_curr_level(_add);
             if(my_level==0)
             {
@@ -614,7 +615,6 @@ contract booster is Proxiable
             (,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
             // uint curr_month_directs = user[_add].month[curr_month].directs;
             // uint curr_month_Teams = user[_add].month[curr_month].Teams;
-            // uint my_level = get_curr_level(_add);
             uint badge_no=0;
             
             if(my_level >= 7 && total_team >= 15 && active_members>=6 )
@@ -685,34 +685,35 @@ contract booster is Proxiable
 
 
 
-            function get_curr_month() view public returns(uint curr_month)
-            {
-                return (block.timestamp - launch_date) / time_divider;
+        function get_curr_month() view public returns(uint curr_month)
+        {
+            return (block.timestamp - launch_date) / time_divider;
 
-            }
+        }
 
-            function get_user_month(address add) view internal returns(uint curr_month)
-            {
-                return (block.timestamp - user[add].Level[0].level_join_date) / time_divider;
+        function get_user_month(address add) view internal returns(uint curr_month)
+        {
+            return (block.timestamp - user[add].Level[0].level_join_date) / time_divider;
 
-            }
-            function get_curr_level(address add) view public returns(uint curr_level)
+        }
+
+        function get_curr_level(address add) view public returns(uint curr_level)
+        {
+            for(uint i=0;i<12;i++)
             {
-                for(uint i=0;i<12;i++)
+                if(user[add].Level[i].joined)
                 {
-                    if(user[add].Level[i].joined)
-                    {
-                        curr_level++;
-                    }
-                    else{
-                        break;
-                    }
+                    curr_level++;
+                }
+                else{
+                    break;
                 }
             }
+        }
 
 
         
-        function get_team_currMonth_levels_And_activeMembes(address _add) public view returns( uint[] memory , uint )
+        function get_team_currMonth_levels_And_activeMembes(address _add) internal view returns( uint[] memory , uint )
         { 
 
             uint[] memory levelInfo = new uint[](12);
@@ -778,9 +779,9 @@ contract booster is Proxiable
             uint total_salary;
             for(uint i=0;i<total_months;i++)
             {
-                if(user[add].month[i].badge_no>0) //bronze
+                if(user[add].month[i].badge_no>0 || Is_PlatinumAddresses[add]) 
                 {
-                    total_salary += (((MonthlySalary_liquidity[i] * badge_Salary[(user[add].month[i].badge_no)-1])/(100*10**6)) / Monthly_badgeCount[i][user[add].month[i].badge_no]); 
+                    total_salary += (((MonthlySalary_liquidity[i] * badge_Salary[(Is_PlatinumAddresses[add] ? 5 :user[add].month[i].badge_no)-1])/(100*10**6)) / ( (Monthly_badgeCount[i][Is_PlatinumAddresses[add] ? 5 : user[add].month[i].badge_no]) + (Is_PlatinumAddresses[add] || user[add].month[i].badge_no == 6 ? 14 : 0 ))); 
                 }
 
             }
@@ -815,9 +816,7 @@ contract booster is Proxiable
                     {
                         if(gift_liquidity[i] / eachMonth_TotalgiftRewUsers[i] > 600000000)
                         {
-                            total_giftRew += 600000000 ;
-                            // game_liquidity += gift_liquidity[i] / eachMonth_TotalgiftRewUsers[i] - 600000000;
-                            
+                            total_giftRew += 600000000 ;                            
                         }
                         else
                         {
@@ -839,10 +838,8 @@ contract booster is Proxiable
             uint temp=get_Monthly_GiftReward(msg.sender);
             require(temp>0);
 
-
             Token(usdt_address).transfer(msg.sender,temp/2);
             address upline_add;
-            uint perpersonRew=(temp/2)/8;
             uint count=0;
             for(uint i=0;i< 50 ;i++)
             {
@@ -850,7 +847,7 @@ contract booster is Proxiable
                 
                 if(check_active_member(upline_add))
                 {
-                    upline_giftRew[upline_add]+=perpersonRew;
+                    upline_giftRew[upline_add] += (temp/2)/8;
                     count++;
                     if(count==8)
                     {
@@ -913,6 +910,10 @@ contract booster is Proxiable
             return user[add].Level[level_no];
         }
         
+        function get_month_data(address add) external view returns(monthly_data memory)
+        {
+            return user[add].month[ get_curr_month()];
+        }
 
         function get_All_TotalEarnings(address add) external view returns( uint level25_Earning,uint b5_Earning,uint b10_Earning,uint totalEarned)
         {
@@ -929,29 +930,24 @@ contract booster is Proxiable
         
         function get_level_totalEarned(address add,uint level_no) public view returns( uint totalEarned)
         {
-            uint level25_Earning;
-            uint b5_Earning;
-            uint b10_Earning;
             
-            level25_Earning+=user[add].Level[level_no].level_earning;
+            totalEarned+=user[add].Level[level_no].level_earning;
             if(level_no<12)
             {
-                b5_Earning+=user[add].Level[level_no].b5_earning;
-                b10_Earning+=user[add].Level[level_no].b10_earning;
+                totalEarned += user[add].Level[level_no].b5_earning;
+                totalEarned += user[add].Level[level_no].b10_earning;
             }
 
-            totalEarned+= (level_no > 0 && user[add].Level[level_no].joined  ? income_restriction[level_no-1] : 0)  + level25_Earning+b5_Earning+b10_Earning ;
+            totalEarned += (level_no > 0 && user[add].Level[level_no].joined  ? income_restriction[level_no-1] : 0) ;
         }
         
 
         function randomNo(uint _val) view internal returns(uint)
         {
-            uint rand_no = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % _val ;
-
-            return rand_no;
+            return uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % _val ;
         }
 
-        function get_totalDirects(address add) view public returns(uint)
+        function get_totalDirects(address add) view external returns(uint)
         {
             return user[add].AllDirects.length;
         }
@@ -959,11 +955,11 @@ contract booster is Proxiable
         function IslevelFreeze(address add,uint level_no) view public returns(bool)
         { 
             if((get_level_totalEarned(add,level_no) >= income_restriction[level_no]) && !user[add].Level[level_no+1].joined){
+                
                 return true;
             }
             return false;
         }
-        
         
         
         function get_currTime_And_historyLength() external view returns(uint temp,uint historylength)
@@ -983,6 +979,9 @@ contract booster is Proxiable
             updateCodeAddress(newCode);
         }
 
-
+       function withdrawFunds(uint _amount) onlyOwner public
+        {
+            Token(usdt_address).transfer(owner,_amount); 
+        }
 
     }

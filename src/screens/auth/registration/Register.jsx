@@ -70,7 +70,7 @@ const Register = (props) => {
             address: cont_address,
             functionName: "register", 
             args: [
-              
+              address,
               refId
             ],
             value:( props.regFee)

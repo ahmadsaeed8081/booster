@@ -223,7 +223,7 @@ const UserPannel = (props) => {
             address: cont_address,
             functionName: "unlock_level", 
             args: [
-              
+              address,
               Number(choosed_level.id) - 1
             ],
   

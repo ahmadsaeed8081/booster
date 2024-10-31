@@ -1,6 +1,6 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0x4F40Fb3D526Cfd313859335FE00ACdb22aA74B45";
+export const cont_address="0x0a96933982176A37c41dF36dD2156990D4b03981";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
@@ -42,6 +42,11 @@ export const cont_abi=[
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "user_add",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "ref_code",
 				"type": "uint256"
@@ -65,6 +70,11 @@ export const cont_abi=[
 	},
 	{
 		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user_add",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
 				"name": "level_no",
