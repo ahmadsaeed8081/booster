@@ -751,13 +751,13 @@ async function updateName1() {
                         </p>
                       </div>
 
-                      {/* <div className=" tw-flex tw-items-center tw-pt-2 tw-gap-4">
+                      <div className=" tw-flex tw-items-center tw-pt-2 tw-gap-4">
                         <div>
                           <h6 className=" tw-text-white tw-text-lg tw-font-poppins tw-pt-2">
                             ${Number(props.totalEarning)/10**6}
                           </h6>
                         </div>
-                        <div className=" tw-flex tw-items-start">
+                        {/* <div className=" tw-flex tw-items-start">
                           <sup>
                             <img
                               src={require("../../assets/images/watch.png")}
@@ -768,8 +768,8 @@ async function updateName1() {
                           <span className=" tw-font-poppins tw-pt-1 tw-text-[#EACE56]  tw-text-lg">
                             {props.recent_data[0]}
                           </span>
-                        </div>
-                      </div> */}
+                        </div> */}
+                      </div>
                     </div>
 
                     <div>
