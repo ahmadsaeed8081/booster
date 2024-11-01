@@ -1,6 +1,6 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0xA3Fd6A9D397EEcD2f42a0aF72D9E16E3189a3244";
+export const cont_address="0x4b1f6B8a35c5806503A3354955d626FEFf5FA950";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
@@ -301,6 +301,30 @@ export const cont_abi=[
 			},
 			{
 				"internalType": "uint256",
+				"name": "i",
+				"type": "uint256"
+			}
+		],
+		"name": "get_Directs",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "add",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
 				"name": "level_no",
 				"type": "uint256"
 			}
@@ -462,25 +486,6 @@ export const cont_abi=[
 				"type": "uint256"
 			}
 		],
-		"name": "gift_liquidity",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
 		"name": "history",
 		"outputs": [
 			{
@@ -529,25 +534,6 @@ export const cont_abi=[
 	{
 		"inputs": [],
 		"name": "launch_date",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "MonthlySalary_liquidity",
 		"outputs": [
 			{
 				"internalType": "uint256",
