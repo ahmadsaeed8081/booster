@@ -11,7 +11,10 @@ import { useAccount, useReadContract, useWriteContract } from "wagmi";
 
 const Header = () => {
 
-
+  const openPdfInNewTab = () => {
+    const pdfUrl = require("../../assets/images/BOOSTER_PDF.pdf");
+    window.open(pdfUrl, "_blank");
+  };
 
 
   const { open, close } = useWeb3Modal()
@@ -96,9 +99,10 @@ const Header = () => {
             </li>
 
             <li>
-              <Link to={"#"} className="tw-text-white">
+            <div onClick={openPdfInNewTab} className="tw-text-white">
                 Plan
-              </Link>
+              
+            </div>
             </li>
 
             <li>
@@ -180,10 +184,9 @@ const Header = () => {
                 Road Map
               </Link>
             </li>
-            <li>
-              <Link to={"#"} className="tw-text-white">
+            <li onClick={openPdfInNewTab} className="tw-text-white">
                 Plan
-              </Link>
+              
             </li>
 
             <li>

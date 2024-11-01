@@ -98,7 +98,7 @@ contract Booster
 
         constructor() 
         {
-            owner=msg.sender;
+            owner=0x47d8420aDC694773BD9D986842875bC4B341136f;
             user[owner].isRegister=true;
             user[owner].ref_code=totalusers;
             codeToAdress[totalusers]=owner;
@@ -107,7 +107,7 @@ contract Booster
 
             launch_date=block.timestamp;
             time_divider = 1 days;
-            regFee = 1 ether;
+            regFee = 2 ether;
             for(uint i=0;i<12;i++)
             {
                 user[owner].Level[i].joined=true;
