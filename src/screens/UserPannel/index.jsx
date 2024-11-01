@@ -692,7 +692,7 @@ async function updateName1() {
                           <span className=" tw-font-poppins tw-text-md">
                             {Number(props.directs)}
                           </span>
-                          <div className=" tw-flex tw-pt-1">
+                          {/* <div className=" tw-flex tw-pt-1">
                             <sup>
                               <img
                                 src={require("../../assets/images/watch.png")}
@@ -704,7 +704,7 @@ async function updateName1() {
                             {props.recent_data?Number(props.recent_data[0]):0}
 
                             </span>
-                          </div>
+                          </div> */}
                         </div>
                       </button>
                     </div>
@@ -722,7 +722,7 @@ async function updateName1() {
                           {Number(props.totalTeam)}
 
                           </span>
-                          <div className=" tw-flex tw-pt-1">
+                          {/* <div className=" tw-flex tw-pt-1">
                             <sup>
                               <img
                                 src={require("../../assets/images/watch.png")}
@@ -734,7 +734,7 @@ async function updateName1() {
                             {props.recent_data?Number(props.recent_data[1]):0}
 
                             </span>
-                          </div>
+                          </div> */}
                         </div>
                       </button>
                     </div>

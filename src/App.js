@@ -54,7 +54,6 @@ function App() {
   const [monthlySalary, set_monthlySalary] = useState(0);
   const [badge, set_badge] = useState(0);
   const [levelData, set_levelData] = useState([]);
-  const [recent_data, set_recent_data] = useState([]);
 
   const [levelFreezeData, set_levelFreezeData] = useState([]);
 
@@ -220,11 +219,10 @@ function App() {
       let  temp=Number(launch_date);
       for(let i=0;i<Number(curr_month);i++)
       {
-          // temp+= (86400*30);
-          temp+= 3600;
+          temp+= (86400*30);
 
       }
-      temp = (60*60) - ((Number(data.temp) - temp));
+      temp = (86400*30) - ((Number(data.temp) - temp));
       set_leftTime(temp+Number(data.temp));
 
       setLoader(false)
@@ -265,10 +263,9 @@ function App() {
          let TotalEarnings= await contract.methods.get_All_TotalEarnings(address).call();
          let curr_level = await contract.methods.get_curr_level(address).call();
          let curr_month = await contract.methods.get_curr_month(address).call();
-         let recent_data = await contract.methods.get_month_data(address).call();
 
          let regFee = await contract.methods.regFee().call();
-         let totalusers = 0;
+         let totalusers =  await contract.methods.totalusers().call();
          let upliner_data = await contract.methods.user(user[2]).call();
          let total_directs = await contract.methods.get_totalDirects(address).call();
          let launch_date = await contract.methods.launch_date().call();
@@ -290,7 +287,6 @@ function App() {
          }
 
          set_user_address(address)
-         set_recent_data(recent_data)
          set_myName(myName=="" ? "User_Booster":myName)
          set_total_users(totalusers);
          set_regFee(regFee)
@@ -322,11 +318,10 @@ function App() {
         let  temp=Number(launch_date);
         for(let i=0;i<Number(curr_month);i++)
         {
-            // temp+= (86400*30);
-            temp+= 3600;
+            temp+= (86400*30);
 
         }
-        temp = (60*60) - ((Number(data.temp) - temp));
+        temp = (86400*30) - ((Number(data.temp) - temp));
         set_leftTime(temp+Number(data.temp));
 
         setLoader(false)
@@ -501,7 +496,7 @@ function App() {
       <Route path='/'  element={<Home  loader={loader}  isRegister={isRegister} />} />
       <Route path='/register'  element={<Register get_data={get_data} loader={loader} regFee={regFee} isRegister={isRegister} />} />
 
-      <Route path='/user-pannel'  element={< UserPannel recent_data={recent_data} levelFreezeData={levelFreezeData} user_address={user_address} isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
+      <Route path='/user-pannel'  element={< UserPannel levelFreezeData={levelFreezeData} user_address={user_address} isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
 
       <Route path='/level-details/:id'  element={<LevelDetails search_user={search_user} loader={loader} levelData={levelData} />} />
      </Routes>

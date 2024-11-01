@@ -1,6 +1,6 @@
 
 export const usdt_address="0x341343568948459e5b7017eDDb05110cfA3EF699";
-export const cont_address="0x0a96933982176A37c41dF36dD2156990D4b03981";
+export const cont_address="0xA3Fd6A9D397EEcD2f42a0aF72D9E16E3189a3244";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
@@ -95,19 +95,6 @@ export const cont_abi=[
 			}
 		],
 		"name": "update_regFee",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newCode",
-				"type": "address"
-			}
-		],
-		"name": "updateCode",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -378,7 +365,7 @@ export const cont_abi=[
 						"type": "uint256[]"
 					}
 				],
-				"internalType": "struct booster.level_data",
+				"internalType": "struct Booster.level_data",
 				"name": "",
 				"type": "tuple"
 			}
@@ -405,47 +392,6 @@ export const cont_abi=[
 				"internalType": "uint256",
 				"name": "totalEarned",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "add",
-				"type": "address"
-			}
-		],
-		"name": "get_month_data",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "directs",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "Teams",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "badge_no",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "eligibleForGift",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct booster.monthly_data",
-				"name": "",
-				"type": "tuple"
 			}
 		],
 		"stateMutability": "view",
@@ -627,20 +573,20 @@ export const cont_abi=[
 	},
 	{
 		"inputs": [],
-		"name": "proxiableUUID",
+		"name": "regFee",
 		"outputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "uint256",
 				"name": "",
-				"type": "bytes32"
+				"type": "uint256"
 			}
 		],
-		"stateMutability": "pure",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "regFee",
+		"name": "totalusers",
 		"outputs": [
 			{
 				"internalType": "uint256",

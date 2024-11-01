@@ -6,25 +6,9 @@ interface Token {
     function transfer(address to, uint tokens) external returns (bool success);
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool) ;
 
-
-    }
-    contract Proxiable {
-    // Code position in storage is keccak256("PROXIABLE") = "0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7"
-
-    function updateCodeAddress(address newAddress) internal {
-        require(
-            bytes32(0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7) == Proxiable(newAddress).proxiableUUID()
-        );
-        assembly { // solium-disable-line
-            sstore(0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7, newAddress)
-        }
     }
 
-    function proxiableUUID() public pure returns (bytes32) {
-        return 0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7;
-    }
-} 
-contract booster is Proxiable
+contract Booster
     {
     
         struct level_data{
@@ -86,7 +70,7 @@ contract booster is Proxiable
       
         address usdt_address;
         uint  time_divider;
-        uint totalusers;
+        uint public totalusers;
 
         uint public launch_date;
         uint public game_liquidity;
@@ -100,7 +84,6 @@ contract booster is Proxiable
         mapping(address=>uint) upline_giftRew;
         mapping(uint=>mapping(uint=>uint)) Monthly_badgeCount;
         mapping(uint=>uint)  eachMonth_TotalgiftRewUsers;
-
         address[] admins;
         mapping(address=>bool) Is_PlatinumAddresses;
         history_data[] public history;
@@ -113,20 +96,18 @@ contract booster is Proxiable
         _;
     }  
 
-
-
-        constructor()
+        constructor() 
         {
             owner=msg.sender;
             user[owner].isRegister=true;
             user[owner].ref_code=totalusers;
             codeToAdress[totalusers]=owner;
             user[owner].registration_time=block.timestamp;
-            usdt_address= 0x341343568948459e5b7017eDDb05110cfA3EF699;
+            usdt_address= 0xc2132D05D31c914a87C6611C10748AEb04B58e8F;
 
             launch_date=block.timestamp;
-            time_divider = 60 minutes;
-            regFee = 0.001 ether;
+            time_divider = 1 days;
+            regFee = 1 ether;
             for(uint i=0;i<12;i++)
             {
                 user[owner].Level[i].joined=true;
@@ -139,20 +120,20 @@ contract booster is Proxiable
             admins.push(0xbd523407784420B3c66630AD6Cdb553369a65697);
             admins.push(0x73167BE4d0cF2489A246249BF901f5939E82208e);
 
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
-            Is_PlatinumAddresses[0x73167BE4d0cF2489A246249BF901f5939E82208e]=true;
+            Is_PlatinumAddresses[0xc1e2A135dEf28c6d47dBc037bA941cdD951954e8]=true;
+            Is_PlatinumAddresses[0x4C52759D43f459812bf6841B81e31955Aeff08C1]=true;
+            Is_PlatinumAddresses[0xd96aA39DE8DD0858F0764A62ecd86faf8988ab81]=true;
+            Is_PlatinumAddresses[0x85F8AC72bAB5A979d2DeA0b330b76Ec850Fb8730]=true;
+            Is_PlatinumAddresses[0xB6AE047CD08CEDA8Bc3dF78F8b9FEDdf1491FeD5]=true;
+            Is_PlatinumAddresses[0xaD5907E80178FbFd00A0517B921C4be75A6845B4]=true;
+            Is_PlatinumAddresses[0xA1De21DEDac9d8F1Ab7D2b5f41B482Ef0D053671]=true;
+            Is_PlatinumAddresses[0x0C7c6184F8428Dc6566AA17483dF1c24e31f1773]=true;
+            Is_PlatinumAddresses[0x7D9094d60A83755b7e5d301a3cc995182a11D51B]=true;
+            Is_PlatinumAddresses[0xc0d25456B90575ce11945b04814Ddb3B97890a29]=true;
+            Is_PlatinumAddresses[0xDFEB5119062b900D253Ba078c67BA9047a02d979]=true;
+            Is_PlatinumAddresses[0xfE795d708E8FF851e061f749Eb9e2485531d25b1]=true;
+            Is_PlatinumAddresses[0xEcfD12351075185e6Be8c7429A62bcbBF18a4d33]=true;
+            Is_PlatinumAddresses[0x5cf932A6DD158207ca0FFd48c711eEBce30a6c40]=true;
 
             
 
@@ -177,7 +158,7 @@ contract booster is Proxiable
             user[user_add].registration_time=block.timestamp;
             codeToAdress[totalusers]=user_add;
             
-            updateHistory(0);
+            updateHistory(0,user_add);
 
             return true;
 
@@ -418,7 +399,7 @@ contract booster is Proxiable
 
             }
                 
-            updateHistory(1);
+            updateHistory(1,user_add);
          
         }
 
@@ -538,61 +519,6 @@ contract booster is Proxiable
         }
 
 
-        // function currMonth_badge(address _add) public view returns(uint )
-        // {
-
-        //     uint my_level = get_curr_level(_add);
-            // if(my_level==0)
-            // {
-            //     return 0;
-
-            // }
-            // if(IslevelFreeze(_add,my_level-1))
-            // {
-            //     return 0;
-            // }
-            
-
-
-        //     uint curr_month= get_curr_month();
-        //     uint total_team = user[_add].total_team;
-        //     (uint[] memory levelcount,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
-        //     uint curr_month_directs = user[_add].month[curr_month].directs;
-        //     uint curr_month_Teams = user[_add].month[curr_month].Teams;
-        //     // uint my_level = get_curr_level(_add);
-        //     uint badge_no=0;
-            
-        //     if(my_level == 12 && total_team >= 20000 && active_members>=16 && curr_month_directs >= 2 && curr_month_Teams>=3500 && levelcount[6]>=15 && levelcount[7]>=5 && levelcount[8]>=2)
-        //     {
-        //         badge_no=6;
-        //     }
-        //     else if(my_level >= 10 && total_team >= 10000 && active_members>=13 && curr_month_directs >= 2 && curr_month_Teams>=2000 && levelcount[5]>=15 && levelcount[6]>=5 && levelcount[7]>=2)
-        //     {
-        //         badge_no=5;
-        //     }            
-        //     else if(my_level >= 8 && total_team >= 4500 && active_members>=10 && curr_month_directs >= 2 && curr_month_Teams>=800 && levelcount[4]>=15 && levelcount[5]>=5 && levelcount[6]>=2)
-        //     {
-        //         badge_no=4;
-        //     }            
-        //     else if(my_level >= 7 && total_team >= 1500 && active_members>=7 && curr_month_directs >= 2 && curr_month_Teams>=450 && levelcount[3]>=15 && levelcount[4]>=5 && levelcount[5]>=2)
-        //     {
-        //         badge_no=3;
-        //     }            
-        //     else if(my_level >= 5 && total_team >= 500 && active_members>=4 && curr_month_directs >= 2 && curr_month_Teams>=100 && levelcount[1]>=15 && levelcount[2]>=5 && levelcount[3]>=2)
-        //     {
-        //         badge_no=2;
-        //     }    
-        
-        //     else if(my_level >= 4 && total_team >= 100 && active_members>=2 && curr_month_directs >= 2 && curr_month_Teams>=30 && levelcount[1]>=5 && levelcount[2]>=2)
-        //     {
-        //         badge_no=1;
-        //     }
-
-        //     return badge_no;
-
-        // }
-
-
         function currMonth_badge(address _add) public view returns(uint )
         {
             if(Is_PlatinumAddresses[_add])
@@ -610,35 +536,35 @@ contract booster is Proxiable
                 return 0;
             }
 
-            // uint curr_month= get_curr_month();
+            uint curr_month= get_curr_month();
             uint total_team = user[_add].total_team;
-            (,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
-            // uint curr_month_directs = user[_add].month[curr_month].directs;
-            // uint curr_month_Teams = user[_add].month[curr_month].Teams;
+            (uint[] memory levelcount,uint active_members) = get_team_currMonth_levels_And_activeMembes(_add);
+            uint curr_month_directs = user[_add].month[curr_month].directs;
+            uint curr_month_Teams = user[_add].month[curr_month].Teams;
             uint badge_no=0;
             
-            if(my_level >= 7 && total_team >= 15 && active_members>=6 )
+             if(my_level == 12 && total_team >= 20000 && active_members>=16 && curr_month_directs >= 2 && curr_month_Teams>=3500 && levelcount[6]>=15 && levelcount[7]>=5 && levelcount[8]>=2)
             {
                 badge_no=6;
             }
-            else if(my_level >= 6 && total_team >= 14 && active_members>=5 )
+            else if(my_level >= 10 && total_team >= 10000 && active_members>=13 && curr_month_directs >= 2 && curr_month_Teams>=2000 && levelcount[5]>=15 && levelcount[6]>=5 && levelcount[7]>=2)
             {
                 badge_no=5;
             }            
-            else if(my_level >= 5 && total_team >= 13 && active_members>=4 )
+            else if(my_level >= 8 && total_team >= 4500 && active_members>=10 && curr_month_directs >= 2 && curr_month_Teams>=800 && levelcount[4]>=15 && levelcount[5]>=5 && levelcount[6]>=2)
             {
                 badge_no=4;
             }            
-            else if(my_level >= 4 && total_team >= 12 && active_members>=3 )
+            else if(my_level >= 7 && total_team >= 1500 && active_members>=7 && curr_month_directs >= 2 && curr_month_Teams>=450 && levelcount[3]>=15 && levelcount[4]>=5 && levelcount[5]>=2)
             {
                 badge_no=3;
             }            
-            else if(my_level >= 3 && total_team >= 11 && active_members>=2 )
+            else if(my_level >= 5 && total_team >= 500 && active_members>=4 && curr_month_directs >= 2 && curr_month_Teams>=100 && levelcount[1]>=15 && levelcount[2]>=5 && levelcount[3]>=2)
             {
                 badge_no=2;
             }    
         
-            else if(my_level >= 2 && total_team >= 10 && active_members>=1 )
+            else if(my_level >= 4 && total_team >= 100 && active_members>=2 && curr_month_directs >= 2 && curr_month_Teams>=30 && levelcount[1]>=5 && levelcount[2]>=2)
             {
                 badge_no=1;
             }
@@ -798,7 +724,7 @@ contract booster is Proxiable
             user[msg.sender].total_salary_withdraw += temp;
         
             
-            updateHistory(2);
+            updateHistory(2,msg.sender);
 
 
             return true;
@@ -857,17 +783,17 @@ contract booster is Proxiable
             }
             user[msg.sender].total_giftRew_withdraw += temp;
             
-            updateHistory(3);
+            updateHistory(3,msg.sender);
 
             return true;
         }
 
-        function updateHistory(uint _action) internal 
+        function updateHistory(uint _action,address add) internal 
         {
             history_data memory temp; 
             temp.action = _action;
             temp.date = block.timestamp;
-            temp.userID = user[msg.sender].ref_code;
+            temp.userID = user[add].ref_code;
             
             if(history.length > 5)
             {
@@ -910,10 +836,6 @@ contract booster is Proxiable
             return user[add].Level[level_no];
         }
         
-        function get_month_data(address add) external view returns(monthly_data memory)
-        {
-            return user[add].month[ get_curr_month()];
-        }
 
         function get_All_TotalEarnings(address add) external view returns( uint level25_Earning,uint b5_Earning,uint b10_Earning,uint totalEarned)
         {
@@ -974,14 +896,8 @@ contract booster is Proxiable
             regFee = val;
         }
 
-        function updateCode(address newCode) onlyOwner external 
-        {
-            updateCodeAddress(newCode);
-        }
-
        function withdrawFunds(uint _amount) onlyOwner public
         {
             Token(usdt_address).transfer(owner,_amount); 
         }
-
     }
