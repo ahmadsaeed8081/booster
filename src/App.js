@@ -321,6 +321,7 @@ function App() {
             temp+= (86400*30);
 
         }
+        alert(Number(curr_month))
         temp = (86400*30) - ((Number(data.temp) - temp));
         set_leftTime(temp+Number(data.temp));
 
