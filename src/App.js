@@ -261,7 +261,7 @@ function App() {
          let GiftReward = await contract.methods.get_Monthly_GiftReward(address).call();
 
          let TotalEarnings= await contract.methods.get_All_TotalEarnings(address).call();
-         let curr_level = await contract.methods.get_curr_level(address).call();
+        //  let curr_level = await contract.methods.get_curr_level(address).call();
          let curr_month = await contract.methods.get_curr_month(address).call();
 
          let regFee = await contract.methods.regFee().call();
@@ -313,7 +313,7 @@ function App() {
 
         set_historyData(history_data)
 
-        set_currLevel(curr_level)
+        set_currLevel(user[7])
 
         let  temp=Number(launch_date);
         for(let i=0;i<Number(curr_month);i++)
@@ -321,7 +321,6 @@ function App() {
             temp+= (86400*30);
 
         }
-        alert(Number(curr_month))
         temp = (86400*30) - ((Number(data.temp) - temp));
         set_leftTime(temp+Number(data.temp));
 

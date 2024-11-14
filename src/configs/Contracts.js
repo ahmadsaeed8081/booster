@@ -1,6 +1,6 @@
 
 export const usdt_address="0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
-export const cont_address="0xcb7C9A6D60714b1F8aE2072d3531fd94fCAEc6E9";
+export const cont_address="0xA638c1A1BC294dc403Aa7c31C6ecbE20BC28b4C0";
 export const cont_Name="0x6f922a3d0DeC230BF3595b9c744403aD6F9a0CC9";
 
 export const cont_Name_abi=[
@@ -236,25 +236,6 @@ export const cont_abi=[
 			{
 				"internalType": "uint256",
 				"name": "totalEarned",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "add",
-				"type": "address"
-			}
-		],
-		"name": "get_curr_level",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "curr_level",
 				"type": "uint256"
 			}
 		],
@@ -626,6 +607,11 @@ export const cont_abi=[
 			{
 				"internalType": "uint256",
 				"name": "registration_time",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "curr_level",
 				"type": "uint256"
 			}
 		],
