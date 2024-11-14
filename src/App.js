@@ -152,7 +152,7 @@ function App() {
        let GiftReward = await contract.methods.get_Monthly_GiftReward(search_address).call();
 
        let TotalEarnings= await contract.methods.get_All_TotalEarnings(search_address).call();
-       let curr_level = await contract.methods.get_curr_level(search_address).call();
+      //  let curr_level = await contract.methods.get_curr_level(search_address).call();
        let curr_month = await contract.methods.get_curr_month(search_address).call();
        let regFee = await contract.methods.regFee().call();
 
@@ -205,7 +205,7 @@ function App() {
       set_levelData(level_data)
       set_levelFreezeData(levelFreeze_data);
       set_historyData(history_data)
-      set_currLevel(curr_level)
+      set_currLevel(user[7])
       if(search_address.toLowerCase()==address.toLowerCase())
       {
         set_isDummyState(false)
