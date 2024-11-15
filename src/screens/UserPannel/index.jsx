@@ -368,7 +368,11 @@ async function updateName1() {
           alert("kindly register the previous level first");
           return;
        }
-
+       if(Number(props.regFee) <= Number( props.pol_bal))
+       {
+          alert("You dont have enough POL to pay company fee ");
+          return;
+       }
 
        if (chainId != currentChainId )
        {

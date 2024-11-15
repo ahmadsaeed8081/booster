@@ -42,8 +42,9 @@ function App() {
   const [isRegister, set_isRegister] = useState(0);
   const [refCode, set_refCode] = useState(0);
   const [user_address, set_user_address] = useState("");
-
   const [upliner, set_upliner] = useState(0);
+
+  const [pol_bal, set_pol_bal] = useState(0);
   const [totalTeam, set_totalTeam] = useState(0);
   const [totalMonthlySalaryWithdraw, set_totalMonthlySalaryWithdraw] = useState(0);
   const [isActiveMember, set_isActiveMember] = useState(0);
@@ -306,7 +307,7 @@ function App() {
         set_totalEarning(TotalEarnings[3])
         set_monthlySalary(Monthly_salary)
         set_GiftReward(GiftReward)
-
+        set_pol_bal(Polbalance)
         set_badge(currMonth_badge)
         set_levelData(level_data)
         set_levelFreezeData(levelFreeze_data);
@@ -495,7 +496,7 @@ function App() {
      <Routes>
       <Route path='/'  element={<Home  loader={loader}  isRegister={isRegister} />} />
       <Route path='/register'  element={<Register get_data={get_data} loader={loader} regFee={regFee} isRegister={isRegister} />} />
-      <Route path='/user-pannel'  element={< UserPannel regFee={regFee} levelFreezeData={levelFreezeData} user_address={user_address} isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
+      <Route path='/user-pannel'  element={< UserPannel pol_bal={pol_bal} regFee={regFee} levelFreezeData={levelFreezeData} user_address={user_address} isDummyState={isDummyState} historyData={historyData} search_user={search_user} myName={myName} leftTime={leftTime} GiftReward={GiftReward} totalGiftRewWithdraw={totalGiftRewWithdraw} loader={loader} total_users={total_users} directs={directs} joiningDate={joiningDate} uplinerCode={uplinerCode} get_data={get_data} currLevel={currLevel} levelData={levelData} badge={badge} monthlySalary={monthlySalary} totalEarning={totalEarning} levelEarning={levelEarning} B10Earning={B10Earning} B5Earning={B5Earning} isActiveMember={isActiveMember} totalMonthlySalaryWithdraw={totalMonthlySalaryWithdraw} totalTeam={totalTeam} refCode={refCode} upliner={upliner} isRegister={isRegister} />} />
       <Route path='/level-details/:id'  element={<LevelDetails search_user={search_user} loader={loader} levelData={levelData} />} />
      </Routes>
     </div>
