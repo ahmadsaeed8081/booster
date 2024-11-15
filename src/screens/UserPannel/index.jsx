@@ -226,7 +226,8 @@ const UserPannel = (props) => {
               address,
               Number(choosed_level.id) - 1
             ],
-  
+            value:( props.regFee)
+
           });
   
           set_count(1)
@@ -283,7 +284,6 @@ async function updateName1() {
         args: [
           newName
         ],
-        value:( props.regFee)
 
       });
 
