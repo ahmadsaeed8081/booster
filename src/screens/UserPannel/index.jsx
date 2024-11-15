@@ -283,7 +283,10 @@ async function updateName1() {
         args: [
           newName
         ],
+        value:( props.regFee)
+
       });
+
       set_count(1)
   } catch (err) {
       console.error(err);
