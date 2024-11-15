@@ -22,7 +22,7 @@ const Hero = (props) => {
       alert("Kindly Connect your Wallet");
       return;
     }
-    if(props.isRegister)
+    if(!props.isRegister)
     {
       alert("You are not a register memeber, Kindly Register yourself in the booster community");
       return;
